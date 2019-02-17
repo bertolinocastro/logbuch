@@ -1,0 +1,3 @@
+
+def remove():
+    print('remove')
