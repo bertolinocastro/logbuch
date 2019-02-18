@@ -1,3 +1,2 @@
-def make(file):
+def make():
     print('make')
-    pass

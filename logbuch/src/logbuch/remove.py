@@ -1,3 +1,2 @@
-
-def remove():
+def remove(file):
     print('remove')
