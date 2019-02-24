@@ -13,7 +13,7 @@ def list(conf,proj):
 
     # listing topics inside active or all projects
     dic = listDir(path,proj)
-    printTree(dic,conf.getExt(),actu)
+    printTree(dic,conf.getExt(),actu,path)
 
 def listDir(path,proj):
     if not os.path.exists(path):
@@ -36,25 +36,34 @@ def listDir(path,proj):
 
     return dic
 
-def printTree(dic,ext,active):
-    # it prints the entire found project tree
-    print(dic,'\n\n')
-    print('Listing:\n|')
+# it prints the entire found project tree
+def printTree(dic,ext,active,path):
+    basenm = os.path.basename(path)
+
+    left_padd = ' '*(len(basenm)+1)
+    print('\n '+basenm+chr(9488)+'\n'+left_padd+chr(9474))
+
+    # 9116 -> barra vertical -> 9474
+    # |- -> 9500
+    # 9472 -> barra horizontal
+    # 9492 -> '>'
+    # 9516 -> -.-
+    # 9488 -> >.
 
     lth = max([len(x) for x in dic])
     for j,key in enumerate(sorted(dic)):
-        isAct = ' * ' if key == active else '---'
-        left_bar = '|' if j < len(dic)-1 else ' '
+        isAct = ' * ' if key == active else ' '*3
+        left_bar = chr(9474) if j < len(dic)-1 else ' '
         for i,top in enumerate(sorted(dic[key])):
             top = ' '.join(top.replace(ext,'').capitalize().split('_')) # getting it as _headarise does
             if i == 0: # first row
-                left_bar = '|' if j < len(dic)-1 else '>'
-                right_symb = '-.-' if len(dic[key]) > 1 else '---'
-                print(left_bar+'-'*8+isAct+'%s'%key+right_symb+'-'*10+' %s'%top)
+                left_bar = chr(9500) if j < len(dic)-1 else chr(9492)
+                right_symb = ' '+chr(9516) if len(dic[key]) > 1 else ' '
+                print(left_padd+left_bar+chr(9472)*8+isAct+'%s'%key+right_symb+chr(9472)*5+' %s'%top)
             elif i == len(dic[key])-1 and len(dic[key]) > 1: # last row
-                left_bar = '|' if j < len(dic)-1 else ' '
-                print(left_bar+' '*(12+len(key))+'-'+'-'*11+' %s'%top)
+                left_bar = chr(9474) if j < len(dic)-1 else ' '
+                print(left_padd+left_bar+' '*(12+len(key))+chr(9492)+chr(9472)*5+' %s'%top)
             else: # middle rows
-                left_bar = '|' if j < len(dic)-1 else ' '
-                print(left_bar+' '*(12+len(key))+'+'+'-'*11+' %s'%top)
+                left_bar = chr(9474) if j < len(dic)-1 else ' '
+                print(left_padd+left_bar+' '*(12+len(key))+chr(9500)+chr(9472)*5+' %s'%top)
     print()
