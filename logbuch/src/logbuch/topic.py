@@ -1,4 +1,5 @@
 import os
+import pathlib
 import sys
 import datetime
 import re
@@ -8,7 +9,7 @@ class Topic(object):
     _base = ''
     _subject = None
     _isNew = False
-    _ext = '.md'
+    _ext = ''
     _path = None
 
     _header = ''
@@ -18,10 +19,11 @@ class Topic(object):
 
     def __init__(self,_subject,conf):
         self._base = conf.projsDir()+'/'+conf.actProj()
+        self._ext = conf.getExt()
 
         # checking wheter there is the base folder
-        if not os.path.exists(self._base):
-            os.mkdir(self._base)
+        # if not os.path.exists(self._base):
+        pathlib.Path(self._base).mkdir(parents=True, exist_ok=True)
 
         if _subject:
             self._subject = _subject

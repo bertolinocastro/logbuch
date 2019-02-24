@@ -3,16 +3,20 @@ import subprocess
 import os
 import re
 
+# TODO: URGENT!!!!!!!!! Convert it to configparser class from python
+
 class Config(object):
     _base = '~/.logbuch'
     _confF = 'conf.cfg'
     _content =  "PROJECTS_FOLDER=%s\n"+\
                 "ACTIVE_PROJECT=%s\n"+\
-                "EDITOR=%s\n"
+                "EDITOR=%s\n"+\
+                "EXTENSION=%s\n"
 
     _PROJS_FOLD = ''
     _ACT_PROJ = ''
     _EDITOR = ''
+    _EXT = ''
 
     def __init__(self):
         self._base = os.path.expanduser(self._base)
@@ -34,7 +38,7 @@ class Config(object):
             print('There is no configuration file in the system. Creating: %s'%self._base+'/'+self._confF)
             content = self._content%(
                 os.path.expanduser('~/logbuch_projects'),
-                'topics', 'vi')
+                'topics', 'vi','.md')
             with open(self._base+'/'+self._confF,'w') as f:
                 f.write(content)
         # ---
@@ -42,10 +46,12 @@ class Config(object):
         try:
             self._PROJS_FOLD = re.findall('PROJECTS_FOLDER\s*=\s*(.+)', content)[0]
             self._ACT_PROJ = re.findall('ACTIVE_PROJECT\s*=\s*(.+)', content)[0]
+            self._EXT = re.findall('EXTENSION\s*=\s*(.+)', content)[0]
         except:
             print('ERROR: could not properly read the configuration file. Backing to default configuration.',file=sys.stderr)
             self._PROJS_FOLD = os.path.expanduser('~/logbuch_projects')
             self._ACT_PROJ = 'topics'
+            self._EXT = '.md'
 
         try:
             self._EDITOR = re.findall('EDITOR=\s*(.+)', content)[0]
@@ -66,3 +72,6 @@ class Config(object):
     def edit(self):
         # running the text editor
         subprocess.run([self.editor(), self._base+'/'+self._confF])
+
+    def getExt(self):
+        return self._EXT
