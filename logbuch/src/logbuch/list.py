@@ -2,14 +2,9 @@ import os
 import sys
 
 def list(conf,proj):
-
-    # print('\n\n\n')
-
     path = conf.projsDir() # projects root
     actu = conf.actProj()  # actual active project
     proj = proj if proj else actu # if a project name was passed
-
-    # print(path,actu,'<'+proj+'>','\n\n')
 
     # listing topics inside active or all projects
     dic = listDir(path,proj)
@@ -53,7 +48,6 @@ def printTree(dic,ext,active,path):
     lth = max([len(x) for x in dic])
     for j,key in enumerate(sorted(dic)):
         isAct = ' * ' if key == active else ' '*3
-        left_bar = chr(9474) if j < len(dic)-1 else ' '
         for i,top in enumerate(sorted(dic[key])):
             top = ' '.join(top.replace(ext,'').capitalize().split('_')) # getting it as _headarise does
             if i == 0: # first row

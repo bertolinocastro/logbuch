@@ -20,9 +20,9 @@ class Config(object):
 
     def __init__(self):
         self._base = os.path.expanduser(self._base)
-        self.confOpen()
+        self._confOpen()
 
-    def confOpen(self):
+    def _confOpen(self):
         if not os.path.exists(self._base):
             os.mkdir(self._base)
 
@@ -75,3 +75,12 @@ class Config(object):
 
     def getExt(self):
         return self._EXT
+
+    def setActive(self,proj):
+        self._ACT_PROJ = proj
+        self._confSave()
+
+    def _confSave(self):
+        content = self._content%(self._PROJS_FOLD,self._ACT_PROJ,self._EDITOR,self._EXT)
+        with open(self._base+'/'+self._confF,'w') as f:
+            f.write(content)

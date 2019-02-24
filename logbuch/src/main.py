@@ -4,15 +4,16 @@ from .logbuch import Logbuch
 
 @click.command(context_settings=dict(max_content_width=120,help_option_names=['-h', '--help']))
 @click.option('-m','--make',is_flag=True,help='Compile subjects to a .tex file using PyLaTeX')
-@click.option('-l','--list',is_flag=True,metavar='[project]',help='List all subjects inside actual project or all if project name is "all"')
+@click.option('-l','--list',is_flag=True,metavar='[project]',help='List contents of project passed as SUBJECT. If "all" is passed, list all projects content. If nothing is passed, defaults to list all subjects inside actual project')
 @click.option('-rm','--remove',metavar='<topic>',help='Remove a subject')
 @click.option('--conf',is_flag=True,help='Open the configuration file [default ~/.logbuch/conf.cfg]')
+@click.option('--proj',is_flag=True,help='Prompt to choose the active project')
 @click.argument('subject',default='')
-def cli(make,list,remove,conf,subject):
+def cli(make,list,remove,conf,proj,subject):
     """Here comes the description message."""
     # TODO: finish the command description above.
 
-    if checkArgs(make,list,remove,conf,subject):
+    if checkArgs(make,list,remove,conf,proj,subject):
         print('Sorry, but only one option is accepted')
         sys.exit(1)
 
@@ -21,6 +22,8 @@ def cli(make,list,remove,conf,subject):
 
     if conf:
         config.edit()
+    elif proj:
+        Logbuch.prompProj(config)
     elif make:
         Logbuch.make(config)
     elif list:
@@ -30,8 +33,8 @@ def cli(make,list,remove,conf,subject):
     else:
         Logbuch.buch(subject,config)
 
-def checkArgs(make,list,remove,conf,subject):
+def checkArgs(make,list,remove,conf,proj,subject):
     # print(make,list,remove,conf,subject)
     # print([make,list,remove!=None,conf,(subject!='') and not list])
-    if sum([make,list,remove!=None,conf,(subject!='') and not list])>1:
+    if sum([make,list,remove!=None,conf,proj,(subject!='') and not list])>1:
         return True

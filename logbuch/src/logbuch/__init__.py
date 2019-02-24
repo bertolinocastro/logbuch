@@ -4,3 +4,4 @@ class Logbuch(object):
     from .remove import remove
     from .buch import buch
     from .config import Config
+    from .projpromp import prompProj
