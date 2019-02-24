@@ -5,7 +5,7 @@ import re
 import time
 
 class Topic(object):
-    _base = 'topics'
+    _base = ''
     _subject = None
     _isNew = False
     _ext = '.md'
@@ -17,6 +17,8 @@ class Topic(object):
     _file_len = 0
 
     def __init__(self,_subject,conf):
+        self._base = conf.projsDir()+'/'+conf.actProj()
+
         # checking wheter there is the base folder
         if not os.path.exists(self._base):
             os.mkdir(self._base)

@@ -34,7 +34,7 @@ class Config(object):
             print('There is no configuration file in the system. Creating: %s'%self._base+'/'+self._confF)
             content = self._content%(
                 os.path.expanduser('~/logbuch_projects'),
-                'default', 'vi')
+                'topics', 'vi')
             with open(self._base+'/'+self._confF,'w') as f:
                 f.write(content)
         # ---
@@ -45,7 +45,7 @@ class Config(object):
         except:
             print('ERROR: could not properly read the configuration file. Backing to default configuration.',file=sys.stderr)
             self._PROJS_FOLD = os.path.expanduser('~/logbuch_projects')
-            self._ACT_PROJ = 'default'
+            self._ACT_PROJ = 'topics'
 
         try:
             self._EDITOR = re.findall('EDITOR=\s*(.+)', content)[0]
@@ -57,6 +57,7 @@ class Config(object):
         return self._PROJS_FOLD
 
     def actProj(self):
+        #TODO: insert a way to get the actual project/it's the last one or the one sended to the command line
         return self._ACT_PROJ
 
     def editor(self):
