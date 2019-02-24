@@ -1,2 +1,2 @@
-def list():
+def list(conf):
     print('list')

@@ -2,11 +2,10 @@ import os
 import subprocess
 from .topic import Topic
 
-def buch(subject):
-    topic = Topic(subject)
+def buch(subject,conf):
+    topic = Topic(subject,conf)
 
     # running the text editor
-    editor = os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi'
-    subprocess.run([editor, topic.path()])
+    subprocess.run([conf.editor(), topic.path()])
 
     topic.close()

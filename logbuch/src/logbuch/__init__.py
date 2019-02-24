@@ -3,3 +3,4 @@ class Logbuch(object):
     from .make import make
     from .remove import remove
     from .buch import buch
+    from .config import Config

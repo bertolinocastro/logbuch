@@ -1,2 +1,2 @@
-def remove(file):
+def remove(file,config):
     print('remove')

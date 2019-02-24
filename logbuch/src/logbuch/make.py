@@ -1,2 +1,2 @@
-def make():
+def make(conf):
     print('make')

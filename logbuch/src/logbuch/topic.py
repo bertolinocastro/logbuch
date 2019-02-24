@@ -16,7 +16,7 @@ class Topic(object):
 
     _file_len = 0
 
-    def __init__(self,_subject):
+    def __init__(self,_subject,conf):
         # checking wheter there is the base folder
         if not os.path.exists(self._base):
             os.mkdir(self._base)
