@@ -26,8 +26,6 @@ def listDir(path,proj):
             dic[proj] = []
         for topic in os.listdir(path+'/'+proj):
             dic[proj].append(topic)
-        if len(dic[proj]) <= 0:
-            del dic[proj]
 
     return dic
 
@@ -48,6 +46,9 @@ def printTree(dic,ext,active,path):
     lth = max([len(x) for x in dic])
     for j,key in enumerate(sorted(dic)):
         isAct = ' * ' if key == active else ' '*3
+        if len(dic[key]) < 1:
+            dic[key].append('Empty!')
+
         for i,top in enumerate(sorted(dic[key])):
             top = ' '.join(top.replace(ext,'').capitalize().split('_')) # getting it as _headarise does
             if i == 0: # first row
