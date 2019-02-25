@@ -14,7 +14,7 @@ def cli(make,list,remove,conf,proj,subject):
     # TODO: finish the command description above.
 
     # getting single string subject
-    subject = ' '.join(subject)
+    subject = treatInput(s)
     if checkArgs(make,list,remove,conf,proj,subject):
         print('Sorry, but only one option is accepted')
         sys.exit(1)
@@ -41,3 +41,6 @@ def checkArgs(make,list,remove,conf,proj,subject):
     # print([make,list,remove,conf,proj,(subject!='') and not (list^remove)])
     if sum([make,list,remove,conf,proj,(subject!='') and not (list ^ remove)])>1:
         return True
+
+def treatInput(s):
+    return ' '.join(s).lower()

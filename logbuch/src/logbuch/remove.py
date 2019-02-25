@@ -20,7 +20,7 @@ def remove(file,config):
         sys.exit(0)
 
     if os.path.exists(path+'/'+actv+'/'+file+ext):
-        print('\nSubject "%s" in project "%s" will be deleted.'%(file,actv))
+        print('\nSubject "%s" in project "%s" will be deleted.'%(headarise(file),actv))
         print(fileInfo(path+'/'+actv+'/'+file+ext))
         if click.confirm('Are you sure?',abort=True):
             os.remove(path+'/'+actv+'/'+file+ext)
@@ -38,3 +38,6 @@ def fileInfo(file):
 
 def unheadarise(s):
     return '_'.join(s.lower().split(' '))
+
+def headarise(s):
+    return ' '.join(s.capitalize().split('_'))
