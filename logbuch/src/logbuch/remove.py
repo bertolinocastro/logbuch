@@ -30,9 +30,12 @@ def remove(file,config):
 def fileInfo(file):
     with open(file,'r') as f:
         content = f.read()
-        res  = 'Date of creation: %s\n'%re.findall('Date: (\d{2}\.\d{2}\.\d{4})',content)[0]
-        res += 'Contents: %d lines'%len(re.findall('\n',content))
-        res += ' and %d characters\n'%len(content)
+        try:
+            res  = '\nDate of creation: %s\n'%re.findall('Date: (\d{2}\.\d{2}\.\d{4})',content)[0]
+            res += 'Contents: %d lines'%len(re.findall('\n',content))
+            res += ' and %d characters\n'%len(content)
+        except:
+            res = '\nCould not read file contents! You shall see its contents before deleting it.\n'
         return res
     return ''
 

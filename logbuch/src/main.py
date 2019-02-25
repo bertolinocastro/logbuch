@@ -14,7 +14,7 @@ def cli(make,list,remove,conf,proj,subject):
     # TODO: finish the command description above.
 
     # getting single string subject
-    subject = treatInput(s)
+    subject = treatInput(subject)
     if checkArgs(make,list,remove,conf,proj,subject):
         print('Sorry, but only one option is accepted')
         sys.exit(1)

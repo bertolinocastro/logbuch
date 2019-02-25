@@ -5,7 +5,7 @@ def prompProj(config):
     act = config.actProj()
 
     # listing topics inside active or all projects
-    lis = listDir(path)
+    lis = sorted(listDir(path))
     printTree(lis,path,act)
 
     res = promptAns(lis)
@@ -28,7 +28,7 @@ def printTree(lis,path,active):
     print('\n '+basenm+chr(9488)+'\n'+left_padd+chr(9474))
 
     lth = max([len(x) for x in lis])
-    for j,key in enumerate(sorted(lis)):
+    for j,key in enumerate(lis):
         isAct = ' * ' if key == active else ' '*3
 
         if len(lis) <= 1:

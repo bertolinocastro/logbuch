@@ -36,7 +36,7 @@ class Topic(object):
                 id = tstamps.index(max(tstamps))
                 lastf = files[id]
                 self._subject = self._file_titable(lastf.replace(self._ext,''))
-                print('Opening last modified file: %s'%self._subject)
+                print('Opening last modified Subject: %s'%self._headarise(self._subject))
                 if self._checkBoolInput('Abort? [y/n]: '):
                     sys.exit(0)
             else:
