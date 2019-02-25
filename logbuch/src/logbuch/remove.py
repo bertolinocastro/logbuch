@@ -10,7 +10,9 @@ def remove(file,config):
     actv = config.actProj()
     ext  = config.getExt()
 
+    # print(file)
     file = unheadarise(file)
+    # print(file)
 
     files = os.listdir(path+'/'+actv)
     if len(files) <= 0:
@@ -23,7 +25,7 @@ def remove(file,config):
         if click.confirm('Are you sure?',abort=True):
             os.remove(path+'/'+actv+'/'+file+ext)
     else:
-        print('This file doest not exist!')
+        print('This subject doest not exist in "%s" project!\nUse -l option to check existing subjects'%actv)
 
 def fileInfo(file):
     with open(file,'r') as f:

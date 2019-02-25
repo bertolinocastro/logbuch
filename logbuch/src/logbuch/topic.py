@@ -26,7 +26,7 @@ class Topic(object):
         pathlib.Path(self._base).mkdir(parents=True, exist_ok=True)
 
         if _subject:
-            self._subject = _subject
+            self._subject = self._file_titable(_subject)
             # check if it already exists
             self._isNew = not os.path.exists(self._base+'/'+self._subject+self._ext)
         else:
@@ -35,7 +35,7 @@ class Topic(object):
                 tstamps = [os.path.getmtime(self._base+'/'+file) for file in files]
                 id = tstamps.index(max(tstamps))
                 lastf = files[id]
-                self._subject = lastf.replace(self._ext,'')
+                self._subject = self._file_titable(lastf.replace(self._ext,''))
                 print('Opening last modified file: %s'%self._subject)
                 if self._checkBoolInput('Abort? [y/n]: '):
                     sys.exit(0)
@@ -126,7 +126,7 @@ class Topic(object):
     def close(self):
         newLen = self._get_file_len()
         changed = newLen - self._file_len
-        print('Topic %s saved!\nContent changed: %+d char'%(self._subject,changed))
+        print('Topic %s saved!\nContent changed: %+d char'%(self._headarise(self._subject),changed))
 
     def _get_file_len(self):
         r = 0
@@ -137,3 +137,6 @@ class Topic(object):
     def _checkBoolInput(self,str):
         res = input(str)
         return 'y' == res or 'Y' == res
+
+    def _file_titable(self,s):
+        return '_'.join(s.split(' '))
