@@ -18,7 +18,8 @@ def cli(make,list,remove,conf,proj,subject):
         sys.exit(1)
 
     config = Logbuch.Config()
-    # TODO: create a way to divide the logbuch per project
+
+    # TODO: create a git option to add,commit,push to an url saved in the config file
 
     if conf:
         config.edit()
