@@ -35,6 +35,8 @@ class Md2Tex(object):
     _proj = None
     _texFile = None
 
+    _projects = None
+
     def __init__(self,config,proj):
         self._config = config
         self._proj = proj
@@ -43,6 +45,7 @@ class Md2Tex(object):
 
         # listing topics inside active or all projects
         dic = listDir(path,proj)
+        self._projects = list(dic)
 
         self._get_title(config)
         self._get_author(config)
@@ -60,6 +63,7 @@ class Md2Tex(object):
             self._add_content([self._tex_section%self._headarise(proj)])
 
             if len(dic[proj]) < 1:
+                print('Warning: Project %s is Empty!'%proj)
                 self._add_content([
                     self._convert_md(None)
                 ])
@@ -86,10 +90,10 @@ class Md2Tex(object):
         self._proj = self._proj if self._proj else 'all'
         self._texFile = path+'/'+self._proj+'.tex'
 
-        with open(self._texFile,'w+') as f:
-            f.write(self._tex_text)
+        if not os.path.exists(self._texFile) or click.confirm('Output TeX file %s already existis. Would you like to overwrite?'%self._texFile):
+            with open(self._texFile,'w+') as f:
+                f.write(self._tex_text)
 
-    # TODO: open the editor to edit the object file contents
     def editContents(self):
         if click.confirm('Would you like to edit the tex file?'):
             subprocess.run([self._config.editor(), self._texFile])
@@ -104,18 +108,26 @@ class Md2Tex(object):
         oldCd = os.getcwd()
         os.chdir(self._config.projsDir())
 
-        print(sys.version)
         cmd,args = self._config.pdfCompiler()
         args = [x.replace('%log_file%',self._texFile) for x in args]
-        # print([cmd]+args)
-        ret = subprocess.run([cmd]+args,capture_output=True)
-        print(ret)
+        ret = subprocess.run([cmd]+args,capture_output=True,check=True)
+        if ret.returncode != 0:
+            print('Something went wrong with compilation step. Error message below:')
+            print(ret.stdout)
+            sys.exit()
 
         args = ['-c','-silent'] # cleaning step
-        ret = subprocess.run([cmd]+args,capture_output=True)
-        print(ret)
+        ret = subprocess.run([cmd]+args,capture_output=True,check=True)
+        if ret.returncode != 0:
+            print('Something went wrong with compilation step. Error message below:')
+            print(ret.stdout)
+            sys.exit()
 
         os.chdir(oldCd)
+
+        projs = self._projects
+        print('Project%s %s compiled as %s.tex'%('s' if len(projs)>1 else '',
+                ','.join(projs), self._proj))
 
 # -----
 
