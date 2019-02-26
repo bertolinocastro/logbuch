@@ -1,6 +1,10 @@
 import os
+import shutil
 import sys
 from .topic import Topic
+import subprocess
+import click
+import getpass
 
 class Md2Tex(object):
     """A class to hold all static methods to convert a markdown to a latex file content"""
@@ -8,7 +12,9 @@ class Md2Tex(object):
     _tex_header = '\n'.join([
         r'\documentclass[12pt]{article}',
         r'\usepackage[utf8x]{inputenc}',
-        r'\usepackage[left=3.5cm, right=1.5cm, top=2.5cm, bottom=2.5cm]{geometry}'
+        r'\usepackage[left=3.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}',
+        r'\usepackage{helvet}',
+        r'\renewcommand{\familydefault}{\sfdefault}'
         ])
 
     _tex_title = r'\title{%s}'
@@ -17,46 +23,56 @@ class Md2Tex(object):
     _tex_begin = r'\begin{document}'
     _tex_end   = r'\end{document}'
 
-    _tex_mkttle = r'\maketitle'
-    _tex_tbcntents = r'\tableofcontents'
+    _tex_mkttle = '\n'+r'\maketitle'
+    _tex_tbcntents = '\n'+r'\tableofcontents'
 
-    _tex_section    = r'\section{%s}'
-    _tex_subsection = r'\subsection{%s}'
+    _tex_section    = '\n''\n'.join([r'\newpage',r'\section{%s}'])
+    _tex_subsection = r'\subsection[%s \qquad \small{\textit{%s}}]{%s\\ \normalfont{\small{%s}}}'
 
     _tex_text = ''
 
+    _config = None
+    _proj = None
+    _texFile = None
+
     def __init__(self,config,proj):
+        self._config = config
+        self._proj = proj
+
         path = config.projsDir() # projects root
 
         # listing topics inside active or all projects
         dic = listDir(path,proj)
-        print(dic)
 
+        self._get_title(config)
         self._get_author(config)
         self._get_contents(dic,config)
 
+    def _get_title(self,config):
+        self._tex_title = self._tex_title%'Logbuch'
+
     def _get_author(self,config):
-        pass
+        self._tex_author = self._tex_author%getpass.getuser()
 
     def _get_contents(self,dic,config):
         self._add_content([self._tex_header,self._tex_title,self._tex_author,self._tex_begin,self._tex_mkttle,self._tex_tbcntents])
         for proj in dic:
-            print(proj)
-            print(dic[proj])
-
             self._add_content([self._tex_section%self._headarise(proj)])
+
+            if len(dic[proj]) < 1:
+                self._add_content([
+                    self._convert_md(None)
+                ])
 
             for topic in dic[proj]:
                 top = Topic(topic,config)
                 cont = top.getFileContents()
-                print(cont)
                 self._add_content([
-                    self._tex_subsection%cont['header'],
+                    self._tex_subsection%(cont['header'],cont['date'],cont['header'],cont['date']),
                     self._convert_md(cont['text'])
                 ])
 
         self._add_content([self._tex_end])
-        print(self._tex_text)
 
     # TODO: call convert md 2 latex procedures
     def _convert_md(self,s):
@@ -65,20 +81,40 @@ class Md2Tex(object):
         else:
             return r'\textit{Nothing here!}'+'\n'
 
-    # TODO: write the file contents to the destination file
     def writeContents(self):
-        pass
+        path = self._config.projsDir()
+        self._proj = self._proj if self._proj else 'all'
+        self._texFile = path+'/'+self._proj+'.tex'
+
+        with open(self._texFile,'w+') as f:
+            f.write(self._tex_text)
 
     # TODO: open the editor to edit the object file contents
     def editContents(self):
-        pass
+        if click.confirm('Would you like to edit the tex file?'):
+            subprocess.run([self._config.editor(), self._texFile])
 
     def _add_content(self,s):
-        print(s)
         self._tex_text += '\n'.join(s)+'\n'
 
     def _headarise(self,s):
         return ' '.join(s.capitalize().split('_'))
+
+    def compile(self):
+        oldCd = os.getcwd()
+        os.chdir(self._config.projsDir())
+
+        cmd,args = self._config.pdfCompiler()
+        args = [x.replace('%log_file%',self._texFile) for x in args]
+        print([cmd]+args)
+        subprocess.run([cmd]+args)
+
+        args = ['-c','-silent'] # cleaning step
+        subprocess.run([cmd]+args)
+
+        os.chdir(oldCd)
+
+# -----
 
 def listDir(path,proj):
     if not os.path.exists(path):
@@ -92,7 +128,7 @@ def listDir(path,proj):
     if proj:
         projs = [proj]
     else:
-        projs = os.listdir(path)
+        projs = [x for x in os.listdir(path) if os.path.isdir(path+'/'+x)]
 
     for proj in projs:
         if proj not in dic:
@@ -102,3 +138,6 @@ def listDir(path,proj):
                 dic[proj].append(topic)
 
     return dic
+
+def _ignoreExt(s):
+    return s != '.tex' and s != '.swp'
