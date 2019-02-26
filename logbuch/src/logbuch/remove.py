@@ -4,19 +4,19 @@ import click
 import re
 
 def remove(file,config):
-    # print(file)
+    if not file:
+        print('You must pass an argument to -rm option.')
+        sys.exit()
 
     path = config.projsDir()
     actv = config.actProj()
     ext  = config.getExt()
 
-    # print(file)
     file = unheadarise(file)
-    # print(file)
 
     files = os.listdir(path+'/'+actv)
     if len(files) <= 0:
-        print('Actual project is empty!')
+        print('Actual project is empty!\nUse -l option to check existing subjects')
         sys.exit(0)
 
     if os.path.exists(path+'/'+actv+'/'+file+ext):
