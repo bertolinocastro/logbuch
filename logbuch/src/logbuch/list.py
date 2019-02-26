@@ -44,12 +44,14 @@ def printTree(dic,ext,active,path):
     # 9492 -> '>'
     # 9516 -> -.-
     # 9488 -> >.
+    if len(dic) < 1:
+        dic['No Projects to list!'] = ['']
 
     lth = max([len(x) for x in dic])
     for j,key in enumerate(sorted(dic)):
         isAct = ' * ' if key == active else ' '*3
         if len(dic[key]) < 1:
-            dic[key].append('Empty!')
+            dic[key].append('Empty project!')
 
         for i,top in enumerate(sorted(dic[key])):
             top = ' '.join(top.replace(ext,'').capitalize().split('_')) # getting it as _headarise does

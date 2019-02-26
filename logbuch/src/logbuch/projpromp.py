@@ -22,6 +22,10 @@ def prompProj(config,proj):
         printTree(lis,path,proj,numbers=False)
     else:
         # printing projects tree
+        if len(lis)<1:
+            print('No Project to list in %s!\nPlease, create one first with an argument to "-p" option.'%path)
+            sys.exit()
+
         printTree(lis,path,act)
         res = promptAns(lis)
         if res == -1:
@@ -34,10 +38,10 @@ def prompProj(config,proj):
             if click.confirm('\nProject "%s" is going to be deleted. Are you sure?'%lis[res]):
                 delProj(path,lis[res])
                 print('Deleted.')
-                lis.remove(res)
                 if lis[res] == act:
                     print('Switching to %s\n'%lis[0])
                     config.setActive(lis[0])
+                lis.remove(lis[res])
         else:
             print('Switching to %s\n'%lis[res])
             config.setActive(lis[res])
