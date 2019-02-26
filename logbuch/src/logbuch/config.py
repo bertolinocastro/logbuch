@@ -86,7 +86,13 @@ class Config(object):
             self._EDITOR = os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi'
 
         try:
-            self._PDF_CMD = re.findall('PDF_CMD\s*=\s*(.+)',content)[0]
+            tmp = re.findall('PDF_CMD\s*=\s*(.+)',content)
+            if len(tmp)<1:
+                if self._make:
+                    raise NoLaTeXTool
+                else:
+                    raise
+            self._PDF_CMD = tmp
             if not '%log_file%' in self._PDF_CMD:
                 print('PDF_CMD parameter in config file has no %log_file% as argument!')
                 if self._make:
@@ -105,6 +111,9 @@ class Config(object):
                     sys.exit()
             else:
                 self._PDF_CMD = self._PDF_CMD_FULL_def
+        except:
+            pass
+
         self._default_PDF_DIR = os.path.expanduser(self._default_PDF_DIR)
 
     def projsDir(self):
