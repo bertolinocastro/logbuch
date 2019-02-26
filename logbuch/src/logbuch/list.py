@@ -25,8 +25,8 @@ def listDir(path,proj):
         if proj not in dic:
             dic[proj] = []
         for topic in os.listdir(path+'/'+proj):
-            dic[proj].append(topic)
-
+            if not '.' == topic[0]: # ignoring hidden files
+                dic[proj].append(topic)
     return dic
 
 # it prints the entire found project tree
