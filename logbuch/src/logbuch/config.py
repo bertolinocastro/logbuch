@@ -12,15 +12,17 @@ class Config(object):
     _content =  "PROJECTS_FOLDER=%s\n"+\
                 "ACTIVE_PROJECT=%s\n"+\
                 "EDITOR=%s\n"+\
-                "EXTENSION=%s\n"+\
-                "PDF_CMD=%s"
+                "EXTENSION=%s\n"
 
 
     _PROJS_FOLD = ''
     _ACT_PROJ = ''
     _EDITOR = ''
     _EXT = ''
+
     _PDF_CMD = ''
+    _default_PDF_DIR = '~/.logbuch/tex_tmp'
+    # _def_pdf_cmd = '-no-shell-escape'
 
     def __init__(self):
         self._base = os.path.expanduser(self._base)
@@ -42,7 +44,7 @@ class Config(object):
             print('There is no configuration file in the system. Creating: %s'%self._base+'/'+self._confF)
             content = self._content%(
                 os.path.expanduser('~/logbuch_projects'),
-                'topics', 'vi','.md','pdftex %log_file%')
+                'topics', 'vi','.md')
             with open(self._base+'/'+self._confF,'w') as f:
                 f.write(content)
         # ---
@@ -63,22 +65,28 @@ class Config(object):
             print('Could not properly read the EDITOR in conf file. Using system\'s default.')
             self._EDITOR = os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi'
 
-        try:
-            self._PDF_CMD = re.findall('PDF_CMD\s*=\s*(.+)',content)[0]
-            if not '%log_file%' in self._PDF_CMD:
-                print('PDF_CMD parameter in config file has no %log_file% as input!')
-                sys.exit()
-            name = self._PDF_CMD.split(' ')[0]
-            if not self._hasTool(name):
-                print('Your system does not have %s installed. Trying pdftex...')
-                if not self._hasTool('pdftex'):
-                    print('Could not find a LaTeX compiler on your system. Please, provide one in config file.')
-                    sys.exit()
-                else:
-                    self._PDF_CMD = 'pdftex %log_file%'
-        except:
-            print('Could not properly read PDF_CMD in config file. Trying to use pdftex.')
-            self._PDF_CMD = 'pdftex %log_file%'
+        # try:
+        #     self._PDF_CMD = re.findall('PDF_CMD\s*=\s*(.+)',content)[0]
+        #     if not '%log_file%' in self._PDF_CMD:
+        #         print('PDF_CMD parameter in config file has no %log_file% as input!')
+        #         sys.exit()
+        #     name = self._PDF_CMD.split(' ')[0]
+        #     if not self._hasTool(name):
+        #         print('Your system does not have %s installed. Trying pdflatex...')
+        #         if not self._hasTool('pdflatex'):
+        #             print('Could not find a LaTeX compiler on your system. Please, provide one in config file.')
+        #             sys.exit()
+        #         else:
+        #             self._PDF_CMD = 'pdflatex -output-directory=~/.logbuch/tex_tmp/ %log_file%'
+        # except:
+        #     print('Could not properly read PDF_CMD in config file. Trying to use pdflatex.')
+        #     if not self._hasTool('pdflatex'):
+        #         print('Could not find pdflatex as LaTeX compiler on your system. Please, provide one in config file.')
+        #         sys.exit()
+        #     else:
+        #         self._PDF_CMD = 'pdflatex -output-directory=~/.logbuch/tex_tmp/ %log_file%'
+        self._default_PDF_DIR = os.path.expanduser(self._default_PDF_DIR)
+        self._PDF_CMD = 'latexmk -pdf -silent %log_file%'
 
     def projsDir(self):
         return self._PROJS_FOLD
@@ -106,5 +114,14 @@ class Config(object):
         with open(self._base+'/'+self._confF,'w') as f:
             f.write(content)
 
+    def getDefTexDir(self):
+        return os.path.expanduser(self._default_PDF_DIR)
+
     def _hasTool(self,name):
         return which(name) is not None
+
+    def pdfCompiler(self):
+        v = self._PDF_CMD.split(' ')
+        cmd = v[0]
+        args = v[1:]
+        return [cmd,args]
