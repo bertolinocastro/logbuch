@@ -2,6 +2,7 @@ import sys
 import subprocess
 import os
 import re
+from whichcraft import which
 
 # TODO: URGENT!!!!!!!!! Convert it to configparser class from python
 
@@ -11,12 +12,15 @@ class Config(object):
     _content =  "PROJECTS_FOLDER=%s\n"+\
                 "ACTIVE_PROJECT=%s\n"+\
                 "EDITOR=%s\n"+\
-                "EXTENSION=%s\n"
+                "EXTENSION=%s\n"+\
+                "PDF_CMD=%s"
+
 
     _PROJS_FOLD = ''
     _ACT_PROJ = ''
     _EDITOR = ''
     _EXT = ''
+    _PDF_CMD = ''
 
     def __init__(self):
         self._base = os.path.expanduser(self._base)
@@ -38,7 +42,7 @@ class Config(object):
             print('There is no configuration file in the system. Creating: %s'%self._base+'/'+self._confF)
             content = self._content%(
                 os.path.expanduser('~/logbuch_projects'),
-                'topics', 'vi','.md')
+                'topics', 'vi','.md','pdftex %log_file%')
             with open(self._base+'/'+self._confF,'w') as f:
                 f.write(content)
         # ---
@@ -58,6 +62,23 @@ class Config(object):
         except:
             print('Could not properly read the EDITOR in conf file. Using system\'s default.')
             self._EDITOR = os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi'
+
+        try:
+            self._PDF_CMD = re.findall('PDF_CMD\s*=\s*(.+)',content)[0]
+            if not '%log_file%' in self._PDF_CMD:
+                print('PDF_CMD parameter in config file has no %log_file% as input!')
+                sys.exit()
+            name = self._PDF_CMD.split(' ')[0]
+            if not self._hasTool(name):
+                print('Your system does not have %s installed. Trying pdftex...')
+                if not self._hasTool('pdftex'):
+                    print('Could not find a LaTeX compiler on your system. Please, provide one in config file.')
+                    sys.exit()
+                else:
+                    self._PDF_CMD = 'pdftex %log_file%'
+        except:
+            print('Could not properly read PDF_CMD in config file. Trying to use pdftex.')
+            self._PDF_CMD = 'pdftex %log_file%'
 
     def projsDir(self):
         return self._PROJS_FOLD
@@ -84,3 +105,6 @@ class Config(object):
         content = self._content%(self._PROJS_FOLD,self._ACT_PROJ,self._EDITOR,self._EXT)
         with open(self._base+'/'+self._confF,'w') as f:
             f.write(content)
+
+    def _hasTool(self,name):
+        return which(name) is not None
