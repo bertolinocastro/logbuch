@@ -147,6 +147,6 @@ class Topic(object):
             content = f.readlines()[4:] # skipping header and dotted line
             self._text = ''.join(content)
         return {'header':   self._headarise(self._subject),
-                'date':     self._date,
+                'date':     self._date[-10:],
                 'text':     self._text
         }
