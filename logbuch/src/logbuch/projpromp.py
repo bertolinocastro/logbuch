@@ -17,7 +17,7 @@ def listDir(path):
         print('Projects folder absent! %s'%path)
         sys.exit()
 
-    projs = os.listdir(path)
+    projs = [x for x in os.listdir(path) if '.tex' != x[-4:]]
     return projs
 
 # it prints the entire found project tree
