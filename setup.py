@@ -13,4 +13,5 @@ setup(
         [console_scripts]
         logbuch=logbuch.src.main:cli
     ''',
+    python_requires='>=3.7',
 )
