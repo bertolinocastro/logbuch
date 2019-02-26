@@ -19,7 +19,7 @@ def cli(make,list,remove,conf,proj,subject):
         print('Sorry, but only one option is accepted')
         sys.exit(1)
 
-    config = Logbuch.Config()
+    config = Logbuch.Config(make,list,remove,conf,proj,subject)
 
     # TODO: create a git option to add,commit,push to an url saved in the config file
 
