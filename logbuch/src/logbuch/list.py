@@ -19,7 +19,7 @@ def listDir(path,proj):
     if proj != 'all':
         projs = [proj]
     else:
-        projs = [x for x in os.listdir(path) if '.tex' != x[-4:]]
+        projs = [x for x in os.listdir(path) if os.path.isdir(path+'/'+x)]
 
     for proj in projs:
         if proj not in dic:

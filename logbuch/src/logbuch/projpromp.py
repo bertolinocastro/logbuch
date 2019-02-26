@@ -8,6 +8,8 @@ def prompProj(config):
     lis = sorted(listDir(path))
     printTree(lis,path,act)
 
+    # TODO: Create an feature to create a project("topics")
+
     res = promptAns(lis)
     print('Switching to %s\n'%lis[res])
     config.setActive(lis[res])
@@ -17,7 +19,7 @@ def listDir(path):
         print('Projects folder absent! %s'%path)
         sys.exit()
 
-    projs = [x for x in os.listdir(path) if '.tex' != x[-4:]]
+    projs = [x for x in os.listdir(path) if os.path.isdir(path+'/'+x)]
     return projs
 
 # it prints the entire found project tree
