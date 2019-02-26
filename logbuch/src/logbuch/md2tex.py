@@ -104,13 +104,16 @@ class Md2Tex(object):
         oldCd = os.getcwd()
         os.chdir(self._config.projsDir())
 
+        print(sys.version)
         cmd,args = self._config.pdfCompiler()
         args = [x.replace('%log_file%',self._texFile) for x in args]
-        print([cmd]+args)
-        subprocess.run([cmd]+args)
+        # print([cmd]+args)
+        ret = subprocess.run([cmd]+args,capture_output=True)
+        print(ret)
 
         args = ['-c','-silent'] # cleaning step
-        subprocess.run([cmd]+args)
+        ret = subprocess.run([cmd]+args,capture_output=True)
+        print(ret)
 
         os.chdir(oldCd)
 
