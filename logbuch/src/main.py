@@ -28,7 +28,7 @@ def cli(make,list,remove,conf,proj,subject):
     elif proj:
         Logbuch.prompProj(config)
     elif make:
-        Logbuch.make(config)
+        Logbuch.make(config,subject)
     elif list:
         Logbuch.list(config,subject)
     elif remove:
@@ -39,7 +39,7 @@ def cli(make,list,remove,conf,proj,subject):
 def checkArgs(make,list,remove,conf,proj,subject):
     # print(make,list,remove,conf,subject)
     # print([make,list,remove,conf,proj,(subject!='') and not (list^remove)])
-    if sum([make,list,remove,conf,proj,(subject!='') and not (list ^ remove)])>1:
+    if sum([make,list,remove,conf,proj,(subject!='') and not (list ^ remove ^ make)])>1:
         return True
 
 def treatInput(s):
