@@ -14,10 +14,11 @@ class Topic(object):
 
     _header = ''
     _date = ''
+    _text = []
 
     _file_len = 0
 
-    def __init__(self,_subject,conf):
+    def __init__(self,subject,conf):
         self._base = conf.projsDir()+'/'+conf.actProj()
         self._ext = conf.getExt()
 
@@ -25,8 +26,8 @@ class Topic(object):
         # if not os.path.exists(self._base):
         pathlib.Path(self._base).mkdir(parents=True, exist_ok=True)
 
-        if _subject:
-            self._subject = self._file_titable(_subject)
+        if subject:
+            self._subject = self._file_titable(subject)
             # check if it already exists
             self._isNew = not os.path.exists(self._base+'/'+self._subject+self._ext)
         else:
@@ -35,7 +36,7 @@ class Topic(object):
                 tstamps = [os.path.getmtime(self._base+'/'+file) for file in files]
                 id = tstamps.index(max(tstamps))
                 lastf = files[id]
-                self._subject = self._file_titable(lastf.replace(self._ext,''))
+                self._subject = self._file_titable(lastf)
                 print('Opening last modified Subject: %s'%self._headarise(self._subject))
                 if self._checkBoolInput('Abort? [y/n]: '):
                     sys.exit(0)
@@ -139,4 +140,13 @@ class Topic(object):
         return 'y' == res or 'Y' == res
 
     def _file_titable(self,s):
-        return '_'.join(s.split(' '))
+        return '_'.join(s.split(' ')).replace(self._ext,'')
+
+    def getFileContents(self):
+        with open(self._path, 'r') as f:
+            content = f.readlines()[4:] # skipping header and dotted line
+            self._text = ''.join(content)
+        return {'header':   self._headarise(self._subject),
+                'date':     self._date,
+                'text':     self._text
+        }
