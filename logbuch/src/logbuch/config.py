@@ -7,6 +7,15 @@ from whichcraft import which
 # TODO: URGENT!!!!!!!!! Convert it to configparser class from python
 
 class Config(object):
+    # args passed
+    _buch = None
+    _list = None
+    _remv = None
+    _make = None
+    _cfgF = None
+    _prmp = None
+    _topc = None
+
     _base = '~/.logbuch'
     _confF = 'conf.cfg'
     _content =  "PROJECTS_FOLDER=%s\n"+\
@@ -21,12 +30,23 @@ class Config(object):
     _EXT = ''
 
     _PDF_CMD = ''
+    _PDF_CMD_def = 'latexmk'
+    _PDF_CMD_FULL_def = _PDF_CMD_def+' -pdf -silent %log_file%'
     _default_PDF_DIR = '~/.logbuch/tex_tmp'
-    # _def_pdf_cmd = '-no-shell-escape'
 
-    def __init__(self):
+    def __init__(self,make,list,remove,conf,proj,subject):
+        self._get_cmd_args(make,list,remove,conf,proj,subject)
+
         self._base = os.path.expanduser(self._base)
         self._confOpen()
+
+    def _get_cmd_args(self,make,list,remove,conf,proj,subject):
+        self._buch = (subject!='') and (make^list^remove^proj)
+        self._list = list
+        self._remv = remove
+        self._make = make
+        self._cfgF = conf
+        self._prmp = proj
 
     def _confOpen(self):
         if not os.path.exists(self._base):
@@ -54,7 +74,7 @@ class Config(object):
             self._ACT_PROJ = re.findall('ACTIVE_PROJECT\s*=\s*(.+)', content)[0]
             self._EXT = re.findall('EXTENSION\s*=\s*(.+)', content)[0]
         except:
-            print('ERROR: could not properly read the configuration file. Backing to default configuration.',file=sys.stderr)
+            print('ERROR: Could not properly read the configuration file. Backing to default configuration.')
             self._PROJS_FOLD = os.path.expanduser('~/logbuch_projects')
             self._ACT_PROJ = 'topics'
             self._EXT = '.md'
@@ -62,31 +82,30 @@ class Config(object):
         try:
             self._EDITOR = re.findall('EDITOR=\s*(.+)', content)[0]
         except:
-            print('Could not properly read the EDITOR in conf file. Using system\'s default.')
+            print('ERROR: Could not properly read the EDITOR in conf file. Using system\'s default.')
             self._EDITOR = os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi'
 
-        # try:
-        #     self._PDF_CMD = re.findall('PDF_CMD\s*=\s*(.+)',content)[0]
-        #     if not '%log_file%' in self._PDF_CMD:
-        #         print('PDF_CMD parameter in config file has no %log_file% as input!')
-        #         sys.exit()
-        #     name = self._PDF_CMD.split(' ')[0]
-        #     if not self._hasTool(name):
-        #         print('Your system does not have %s installed. Trying pdflatex...')
-        #         if not self._hasTool('pdflatex'):
-        #             print('Could not find a LaTeX compiler on your system. Please, provide one in config file.')
-        #             sys.exit()
-        #         else:
-        #             self._PDF_CMD = 'pdflatex -output-directory=~/.logbuch/tex_tmp/ %log_file%'
-        # except:
-        #     print('Could not properly read PDF_CMD in config file. Trying to use pdflatex.')
-        #     if not self._hasTool('pdflatex'):
-        #         print('Could not find pdflatex as LaTeX compiler on your system. Please, provide one in config file.')
-        #         sys.exit()
-        #     else:
-        #         self._PDF_CMD = 'pdflatex -output-directory=~/.logbuch/tex_tmp/ %log_file%'
+        try:
+            self._PDF_CMD = re.findall('PDF_CMD\s*=\s*(.+)',content)[0]
+            if not '%log_file%' in self._PDF_CMD:
+                print('PDF_CMD parameter in config file has no %log_file% as argument!')
+                if self._make:
+                    raise NoLogFile
+            else:
+                name = self._PDF_CMD.split(' ')[0]
+                if self._make and not self._hasTool(name):
+                    print('Your system does not have "%s" installed. Checking %s...'%(name,self._PDF_CMD_def))
+                    raise NoLaTeXTool
+        except NoLogFile:
+            sys.exit()
+        except NoLaTeXTool:
+            if not self._hasTool(self._PDF_CMD_def):
+                print('Could not find %s as LaTeX compiler on your system. Please, provide an existing one in config file.'%self._PDF_CMD_def)
+                if self._make:
+                    sys.exit()
+            else:
+                self._PDF_CMD = self._PDF_CMD_FULL_def
         self._default_PDF_DIR = os.path.expanduser(self._default_PDF_DIR)
-        self._PDF_CMD = 'latexmk -pdf -silent %log_file%'
 
     def projsDir(self):
         return self._PROJS_FOLD
@@ -125,3 +144,9 @@ class Config(object):
         cmd = v[0]
         args = v[1:]
         return [cmd,args]
+
+class NoLogFile(Exception):
+    pass
+
+class NoLaTeXTool(Exception):
+    pass
