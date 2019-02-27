@@ -49,4 +49,4 @@ Besides, I felt that writing them as fast as one can just open one's text editor
 
 © Bertolino
 
-License under the [MIT License](LICENSE.md)
+License under the [MIT License](LICENSE.txt)
