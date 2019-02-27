@@ -1,14 +1,18 @@
 #!/bin/bash
 printf "
 Automated demo installer.
-Is uses python's 3 or higher venv module.
+It uses python's 3 or higher venv module.
 
 It must be sourced, not directly executed. For instance: source ./demo_install.sh
 
-You may pass non environment python executable as inline var.
+You may pass python executable as inline var.
 For instance: PYTHON=python3.7 source ./demo_install.sh
 
 "
+# checking for source or prevent execution
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  exit
+fi
 
 if [[ -z $PYTHON ]]; then
   PYTHON=python3
