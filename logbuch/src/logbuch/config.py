@@ -38,6 +38,7 @@ class Config(object):
         self._get_cmd_args(make,list,remove,conf,proj,subject)
 
         self._base = os.path.expanduser(self._base)
+        self._default_PDF_DIR = os.path.expanduser(self._default_PDF_DIR)
         self._confOpen()
 
     def _get_cmd_args(self,make,list,remove,conf,proj,subject):
@@ -71,18 +72,26 @@ class Config(object):
 
         try:
             self._PROJS_FOLD = re.findall('PROJECTS_FOLDER\s*=\s*(.+)', content)[0]
+        except:
+            print('ERROR: Could not properly read PROJS_FOLD in configuration file. Backing to default.')
+            self._PROJS_FOLD = os.path.expanduser('~/logbuch_projects')
+
+        try:
             self._ACT_PROJ = re.findall('ACTIVE_PROJECT\s*=\s*(.+)', content)[0]
+        except:
+            print('ERROR: Could not properly read ACT_PROJ in configuration file. Backing to default.')
+            self._ACT_PROJ = 'default'
+
+        try:
             self._EXT = re.findall('EXTENSION\s*=\s*(.+)', content)[0]
         except:
-            print('ERROR: Could not properly read the configuration file. Backing to default configuration.')
-            self._PROJS_FOLD = os.path.expanduser('~/logbuch_projects')
-            self._ACT_PROJ = 'default'
+            print('ERROR: Could not properly read EXTENSION in configuration file. Backing to default.')
             self._EXT = '.md'
 
         try:
-            self._EDITOR = re.findall('EDITOR=\s*(.+)', content)[0]
+            self._EDITOR = re.findall('EDITOR\s*=\s*(.+)', content)[0]
         except:
-            print('ERROR: Could not properly read the EDITOR in conf file. Using system\'s default.')
+            print('ERROR: Could not properly read the EDITOR in conf file. Using system\'s default or trying "vi" if none.')
             self._EDITOR = os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi'
 
         try:
@@ -113,8 +122,6 @@ class Config(object):
                 self._PDF_CMD = self._PDF_CMD_FULL_def
         except:
             pass
-
-        self._default_PDF_DIR = os.path.expanduser(self._default_PDF_DIR)
 
     def projsDir(self):
         return self._PROJS_FOLD
