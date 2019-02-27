@@ -39,7 +39,7 @@ else
     echo "Python virtual environment created."
     . venv/bin/activate
     echo -e "Installing Logbuch in actual virtual environment...\n"
-    pip3 install --editable .
+    python${version} -m pip install --editable .
   fi
 
 fi
