@@ -2,6 +2,8 @@ import sys
 import click
 from .logbuch import Logbuch
 
+__version__ = '1.0'
+
 @click.command(context_settings=dict(max_content_width=120,help_option_names=['-h', '--help']))
 @click.option('-m','--make',is_flag=True,help='Compile subjects to a .tex file using defined LaTeX compiler')
 @click.option('-l','--list',is_flag=True,metavar='[project]',help='List contents of project passed as SUBJECT. If "all" is passed, list all projects content. If nothing is passed, defaults to list all subjects inside actual project')
@@ -10,8 +12,13 @@ from .logbuch import Logbuch
 @click.option('-p','--proj',is_flag=True,help='Prompt to choose the active project')
 @click.argument('subject',nargs=-1)
 def cli(make,list,remove,conf,proj,subject):
-    """Here comes the description message."""
-    # TODO: finish the command description above.
+    """Logbuch\t(version 1.0)
+
+    A less-do-more program to take your notes quickly before you forget them.
+
+    It also compiles in LaTeX for your LabBook/research history. :-)
+
+    """
 
     # getting single string subject
     subject = treatInput(subject)
@@ -37,8 +44,6 @@ def cli(make,list,remove,conf,proj,subject):
         Logbuch.buch(subject,config)
 
 def checkArgs(make,list,remove,conf,proj,subject):
-    # print(make,list,remove,conf,subject)
-    # print([make,list,remove,conf,proj,(subject!='') and not (list^remove)])
     if sum([make,list,remove,conf,proj,(subject!='') and not (list ^ remove ^ make ^ proj)])>1:
         return True
 
