@@ -10,17 +10,17 @@ It also compiles in LaTeX for your LabBook/research history. :-)
 
 Logbuch is a command line tool aimed to quickly take notes while you're closer to a terminal.
 
-Logbuch works handling _Markdown_ files. Each of these files are treated as a _Subject_ and are where the notes are taken. Logbuch groups many _Subjects_ inside its _Project_, as defined by the user.
+Logbuch works handling _Markdown_ files. Each of these files is treated as a _Subject_ and is where the notes are taken. Logbuch groups many _Subjects_ inside its _Project_, as defined by the user.
 
-Each _Subject_ content is converted from _Markdown_ to _LaTeX_ syntax and then becomes a _subsection_ inside its _Project_ _section_. It can also handle figures from your work/analysis.
+Each _Subject_ content is converted from _Markdown_ to _LaTeX_ syntax and then becomes a _subsection_ inside its _Project_ _section_. It can also handle figures from one's work/analysis.
 
 ## Motivation
 
-As I am pursuing the scientific career, I have noticed that small, but no less important, information are lost quickly while doing day-by-day tasks. Such information can be the separation point between you do unnecessary rework and start a new day at the next step.
+As I am pursuing the scientific career, I have noticed that small, but no less important, information are lost quickly while doing day-by-day tasks. Such information can be the separation point between doing unnecessary rework and starting a new day at the next step.
 
-So, I saw that writing concise information, that one can remember without struggling the mind to know what that is supposed to mean, is a huge time improvement. For instance: remote meetings tasks and deliberations; internet how-to's; papers sentences that you used as reference for your work or procedures; detailed notes of your work issues and methodology; thoughts and impressions that you consider important to remeber later on; etc.
+So, I saw that writing concise information, that one can remember without struggling the mind to know what that is supposed to mean, is a huge time improvement. For instance: remote meetings tasks, deliberations and agreements; internet how-to's; papers sentences that one used as reference for one's work or procedures; detailed notes of one's work issues and methodology; thoughts and impressions that one consider important to remember later on; etc.
 
-Besides, I felt that writing them as fast as one can open one's text editor at any working directory is the point to not forget them. 
+Besides, I felt that writing them as fast as one can just open one's text editor at any working directory is the point to not forget them.
 
 ## Table of Contents
 
@@ -31,8 +31,11 @@ Besides, I felt that writing them as fast as one can open one's text editor at a
 - [x] Creation, edition and compilation to _LaTeX_
 - [ ] Conversion of _Markdown_ tags to _LaTeX_ ones
 - [ ] Integration with git
+- [ ] _What more? Feel free to ask desired features._
 
 ## Installation
+
+
 
 ## Configuration
 
@@ -43,3 +46,7 @@ Besides, I felt that writing them as fast as one can open one's text editor at a
 (falar sobre o labbook de bia?)
 
 ## License
+
+© Bertolino
+
+License under the [MIT License](LICENSE.md)
