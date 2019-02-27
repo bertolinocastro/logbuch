@@ -64,7 +64,7 @@ class Config(object):
             print('There is no configuration file in the system. Creating: %s'%self._base+'/'+self._confF)
             content = self._content%(
                 os.path.expanduser('~/logbuch_projects'),
-                'topics', 'vi','.md')
+                'default', 'vi','.md')
             with open(self._base+'/'+self._confF,'w') as f:
                 f.write(content)
         # ---
@@ -76,7 +76,7 @@ class Config(object):
         except:
             print('ERROR: Could not properly read the configuration file. Backing to default configuration.')
             self._PROJS_FOLD = os.path.expanduser('~/logbuch_projects')
-            self._ACT_PROJ = 'topics'
+            self._ACT_PROJ = 'default'
             self._EXT = '.md'
 
         try:

@@ -41,6 +41,7 @@ def prompProj(config,proj):
                 lis.remove(lis[res])
                 if len(lis)<1:
                     print('Empty Projects folder!')
+                    config.setActive('default')
                 elif lis[res] == act:
                     print('Switching to %s\n'%lis[0])
                     config.setActive(lis[0])
