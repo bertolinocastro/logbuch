@@ -1,10 +1,11 @@
 <img src="https://bertolinocastro.github.io/logbuch/logo.png" align="right" title="Logbuch logo">
+[![version](https://img.shields.io/badge/version-v1.0-orange.svg)](https://github.com/bertolinocastro/logbuch)
 
 # Logbuch
 
 A less-do-more program to take your notes quickly before you forget them.
 
-It also compiles in LaTeX for your LabBook/research history. :-)
+It also compiles in LaTeX for your Lab-Book/research history. :-)
 
 ## Description
 
@@ -90,7 +91,7 @@ $ cd logbuch
 $ python3 -m pip install .
 ```
 
-_**Warning**_ _You may notice the last command may not work even after installing `python3.7` or higher. In order to solve that, just `export` prepending your newer python command to `PATH`. You may also create an alias for it or create a symlink. There are many resources on the web to solve this problem._
+_**Warning**_ _You may notice the last command may not work even after installing `python3.7` or higher. In order to solve that, just `export` prepending your newer python command to `PATH`. You may also create an alias or a symlink for it. There are many resources on the web to solve this problem._
 
 ## Configuration
 
@@ -109,19 +110,23 @@ PDF_CMD=latexmk -pdf -silent %log_file%
 In parts:
 
 1. `PROJECTS_FOLDER=/home/user/logbuch_projects`  
-  It's the full path to where all projects will be stored as well as the compiled _LaTeX_ output. I would suggest it to be a git repository, as you will probably care about the history of your notes.  
+  It's the full path to where all projects will be stored as well as the compiled _LaTeX_ output. I would suggest it to be a git repository, as you will probably care about the history of your notes.
+
 2. `ACTIVE_PROJECT=default`  
-  It's the name of the active ___Project___ that Logbuch uses to create new ___Subjects___. You should not care about this parameter, just don't let it empty, so Logbuch will use _default_ as actual ___Project___ name.  
+  It's the name of the active ___Project___ that Logbuch uses to create new ___Subjects___. You should not care about this parameter, just don't let it empty, although Logbuch will use _default_ as actual ___Project___ name.
+
 3. `EDITOR=vi`  
-  It's the command which Logbuch calls when you use any edition option. The command just needs to accept a file name as argument. This is not a problem, since the majority of command line text editors follows this rule.  
+  It's the command which Logbuch calls when you use any edition option. The command just needs to accept a file name as argument. This is not a problem, since the majority of command line text editors follows this rule.
+
 4. `EXTENSION=.md`  
-  It's the extension used on all ___Subject___ text files. Logbuch does not discriminate which one is used. Just be advised that it saves and reads using the __same__ extension, so do not change it without refactoring your old files extension.  
+  It's the extension used on all ___Subject___ text files. Logbuch does not discriminate which one is used. Just be advised that it saves and reads using the __same__ extension, so do not change it without refactoring your old files extension.
+
 5. `PDF_CMD=latexmk -pdf -silent %log_file%`  
   It's the full command used to compile your ___Subjects___ in a _LaTeX_ document. You can pass any arguments to your _LaTeX_ compiler. Just make sure that your command is the first space-ended string after the __=__ and that it has `%log_file%`, as this is where the input __.tex__ file will the replaced.
 
 FYI:
 - Each entry may have spaces before and after the __=__ sign.
-- `PDF_CMD` may have a sequence of commands separated by `;` (~~~not yet implemented~~~)
+- `PDF_CMD` may have a sequence of commands separated by `;`. (~~not yet implemented~~)
 
 ## Usage
 
@@ -131,10 +136,10 @@ FYI:
     Just the author of Logbuch.
 
 - @waltercostamb  
-    Mentor and author of a brilliant workshop showing all purposes of doing Lab-Book and her structured and logic way to deal with her research annotations. For more in-deep information, check her [Lab-Book](https://github.com/waltercostamb/Lab-Book) repository.
+    Mentor and author of a brilliant workshop showing all purposes of doing Lab-Book at the Academy and her structured and logic way to deal with her research annotations. For more in-deep information, check her [Lab-Book repository](https://github.com/waltercostamb/Lab-Book).
 
 ## License
 
 © Bertolino
 
-Licensed under the [MIT License](LICENSE.txt)
+Licensed under the [MIT License](LICENSE.txt) [![MIT License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
