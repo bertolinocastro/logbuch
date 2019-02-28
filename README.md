@@ -1,6 +1,8 @@
 <img src="https://bertolinocastro.github.io/logbuch/logo.png" align="right" title="Logbuch logo">
 
-[![version](https://img.shields.io/badge/version-v1.0-orange.svg)](https://github.com/bertolinocastro/logbuch)
+![version](https://img.shields.io/badge/version-v1.0-orange.svg)
+![platform](http://img.shields.io/badge/platform-linux-brightgreen.svg)
+[![MIT License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
 # Logbuch
 
@@ -16,6 +18,22 @@ Logbuch works handling _Markdown_ files. Each of these files is treated as a ___
 
 Each ___Subject___ content is converted from _Markdown_ to _LaTeX_ syntax and then becomes a _subsection_ inside its ___Project___ _section_. It can also handle figures from one's work/analysis.
 
+## Table of Contents
+
+- [Motivation](#motivation)
+- [Features](#features)
+- [Installation](#installation)
+  - [Requirements](#requirements)
+  - [Automated install](#automated_install)
+  - [Manual install](#manual_install)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [-h](#-h)
+- [Supported Markdown tags](#supported_markdown_tags)
+- [Issues and desired features](#issues_and_desired_features)
+- [Credits](#credits)
+- [License](#license)
+
 ## Motivation
 
 As I am pursuing the scientific career, I have noticed that small, but no less important, information are lost quickly while doing day-by-day tasks. Such information can be the separation point between doing unnecessary rework and starting a new day at the next step.
@@ -23,8 +41,6 @@ As I am pursuing the scientific career, I have noticed that small, but no less i
 So, I saw that writing concise information, that one can remember without struggling the mind to know what that is supposed to mean, is a huge time improvement. For instance: remote meetings tasks, deliberations and agreements; internet how-to's; papers sentences that one used as reference for one's work or procedures; detailed notes of one's work issues and methodology; thoughts and impressions that one consider important to remember later on; etc.
 
 Besides, I felt that writing them as fast as one can just open one's text editor at any working directory is the point to not forget them.
-
-## Table of Contents
 
 ## Features
 
@@ -131,6 +147,96 @@ FYI:
 
 ## Usage
 
+The basic usage of Logbuch is creating/opening a ___Subject___ inside the active ___Project___. In order to do that you must type:
+```sh
+logbuch subject name with how many words you want
+```
+this command will open your text editor with a predefined header. The header contains The ___Subject___ and the date of creation. You must write everything below the `# ------` line, because that information is handled by Logbuch.
+
+If you want to open your last edited ___Subject___ inside the active ___Project___, just type Logbuch without any argument:
+```sh
+logbuch
+```
+---
+###### `-rm/--remove` option
+
+This option is used to delete any ___Subject___ inside the active ___Project___. It requires an argument that must be the ___Subject___ name. It will prompt your confirmation to delete.
+```sh
+logbuch -rm subject name with how many words you want
+```
+
+---
+###### `-p/--proj` option
+
+This option will list your ___Projects___ and give you a number of options to set one ___Project___ as active or delete it with its contents. The `*` sign represents which ___Project___ is active now.
+```sh
+logbuch -p
+```
+
+If you pass an argument to this option, Logbuch will create an ___Project___ if it does not exist and set it as active. _Be aware that this must be one of your first steps while setting Logbuch up for the first time._
+```sh
+logbuch -p name of your project
+```
+
+---
+###### `-l/--list` option
+
+This option lists the content of your active ___Project___  if no argument is passed.
+```sh
+logbuch -l
+```
+
+As arguments, it accepts the name of any single ___Project___ you have in your ___Projects___ folder and prints its content or accepts the string "all" and prints the contents of all ___Projects___. As in `-p`, `*` sign represents which ___Project___ is active now.
+```sh
+logbuch -l name of your project
+logbuch -l all
+```
+
+---
+###### `-m/--make` option
+
+This option will get all content below the `# ------` string inside your ___Subjects___ and put them as `\subsection{}` content in the compiled file.
+The ___Subject___ and the date of creation will become the subsection title and subtitle, respectively. Your ___Project___ will become a `\section{}` and its name will be the section title. The author of the compiled _LaTeX_ file is obtained from your system's user name.
+
+Using this option without arguments makes it compile for all ___Projects___ and save the _LaTeX_ output as `all.tex`.
+```sh
+logbuch -m
+```
+You may also pass a ___Project___ name, so Logbuch will compile just it with its contents.
+```sh
+logbuch -m name of your project
+```
+
+All outputs are saved in your ___Projects___ folder root and are name with your ___Project___ name followed by `.tex` extension for the _LaTeX_ inputs and `.pdf` for the outputs. Feel free to edit them as you wish.
+
+If you have an existing `.tex` file, Logbuch will prompt you if you want to overwrite it, so you can just recompile a previous `.tex` version.
+
+---
+###### `-g/--git` option (~~not implemented~~)
+
+---
+###### `-c/--conf` option
+
+This option opens the configuration file `~/.logbuch/conf.cfg` in your text editor, so you can edit it by hand. The parameters were deeply discussed at [Configuration section](#configuration).
+
+---
+###### `-h/--help` option
+Finally, you can always use the `-h/--help` option to get information about Logbuch options.
+
+---
+
+FYI:
+- ___Subject___ and ___Project___ names are allowed to have space. Their leading char will always be capitalized and the remaining lowered. Underscores will be converted to spaces.
+-
+- Logbuch may handle cases that are not discussed in this README. If you get any trouble using Logbuch, please, let me know.
+
+## Supported Markdown tags (~~not yet implemented~~)
+---
+
+## Issues and desired features
+
+(please use the repository Issues page to report any issues and ask desired features)
+
 ## Credits
 
 - @bertolinocastro  
@@ -143,4 +249,4 @@ FYI:
 
 © Bertolino
 
-Licensed under the [MIT License](LICENSE.txt) [![MIT License](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+Licensed under the [MIT License](LICENSE.txt)
