@@ -28,7 +28,14 @@ Each ___Subject___ content is converted from _Markdown_ to _LaTeX_ syntax and th
   - [Manual install](#manual_install)
 - [Configuration](#configuration)
 - [Usage](#usage)
-  - [-h](#-h)
+  Options:
+    - [-rm/--remove](#-rm--remove-option)
+    - [-p/--proj](#-p--proj-option)
+    - [-l/--list](#-l--list-option)
+    - [-m/--make](#-m--make-option)
+    - [-g/--git](#-g--git-option)
+    - [-c/--conf](#-c--conf-option)
+    - [-h/--help](#-h--help-option)
 - [Supported Markdown tags](#supported_markdown_tags)
 - [Issues and desired features](#issues_and_desired_features)
 - [Credits](#credits)
@@ -212,7 +219,8 @@ All outputs are saved in your ___Projects___ folder root and are name with your 
 If you have an existing `.tex` file, Logbuch will prompt you if you want to overwrite it, so you can just recompile a previous `.tex` version.
 
 ---
-###### `-g/--git` option (~~not implemented~~)
+###### `-g/--git` option
+(~~not implemented~~)
 
 ---
 ###### `-c/--conf` option
@@ -230,12 +238,18 @@ FYI:
 -
 - Logbuch may handle cases that are not discussed in this README. If you get any trouble using Logbuch, please, let me know.
 
-## Supported Markdown tags (~~not yet implemented~~)
+## Supported Markdown tags
+(~~not yet implemented~~)
+
 ---
 
 ## Issues and desired features
 
-(please use the repository Issues page to report any issues and ask desired features)
+Report any issues you may find at the [repository Issues page](https://github.com/bertolinocastro/logbuch/issues).
+
+If you wish any new feature to be added in Logbuch, please, do not hesitate to let me know it! Use the Issues page and label it with the `enhancement` label.
+
+All criticisms and suggestions are very welcome!
 
 ## Credits
 
