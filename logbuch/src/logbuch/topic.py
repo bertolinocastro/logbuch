@@ -5,6 +5,8 @@ import datetime
 import re
 import time
 
+from .git import Git
+
 class Topic(object):
     _base = ''
     _subject = None
@@ -12,15 +14,20 @@ class Topic(object):
     _ext = ''
     _path = None
 
+    _conf = None
+
     _header = ''
     _date = ''
     _text = []
 
     _file_len = 0
+    _file_lines = 0
 
     def __init__(self,subject,conf):
         self._base = conf.projsDir()+'/'+conf.actProj()
         self._ext = conf.getExt()
+
+        self._conf = conf
 
         # checking wheter there is the base folder
         # if not os.path.exists(self._base):
@@ -98,6 +105,8 @@ class Topic(object):
         s = sum([1 for line in file])
         file.seek(pos0)
 
+        self._file_lines = s
+
         if s < 2:
             return False
         return True
@@ -125,15 +134,23 @@ class Topic(object):
         return self._path
 
     def close(self):
-        newLen = self._get_file_len()
-        changed = newLen - self._file_len
-        print('Topic %s saved!\nContent changed: %+d char'%(self._headarise(self._subject),changed))
+        newLen, newLine = self._get_file_len()
+        changedC = newLen - self._file_len
+        changedL = newLine - self._file_lines
+        print('Topic %s saved!\nContent changed: %+d char, %+d lines'%(self._headarise(self._subject),changedC,changedL))
+
+        if (changedC or changedL) and self._conf.isAutoCommit():
+            print('\nGit autocommiting...\n\n')
+            Git.autoCommit(self._conf,self._subject+self._ext,changedC,changedL)
 
     def _get_file_len(self):
         r = 0
+        s = 0
         with open(self._path, 'a+') as f:
             r = f.tell()
-        return r
+            f.seek(0)
+            s = sum([1 for line in f])
+        return r,s
 
     def _checkBoolInput(self,str):
         res = input(str)

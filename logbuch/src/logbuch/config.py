@@ -14,6 +14,7 @@ class Config(object):
     _make = None
     _cfgF = None
     _prmp = None
+    _gitt = None
     _topc = None
 
     _base = '~/.logbuch'
@@ -37,20 +38,21 @@ class Config(object):
 
     _G_AUTO_COMMIT = None
 
-    def __init__(self,make,list,remove,conf,proj,subject):
-        self._get_cmd_args(make,list,remove,conf,proj,subject)
+    def __init__(self,make,list,remove,conf,proj,git,subject):
+        self._get_cmd_args(make,list,remove,conf,proj,git,subject)
 
         self._base = os.path.expanduser(self._base)
         self._default_PDF_DIR = os.path.expanduser(self._default_PDF_DIR)
         self._confOpen()
 
-    def _get_cmd_args(self,make,list,remove,conf,proj,subject):
+    def _get_cmd_args(self,make,list,remove,conf,proj,git,subject):
         self._buch = (subject!='') and (make^list^remove^proj)
         self._list = list
         self._remv = remove
         self._make = make
         self._cfgF = conf
         self._prmp = proj
+        self._gitt = git
 
     def _confOpen(self):
         if not os.path.exists(self._base):

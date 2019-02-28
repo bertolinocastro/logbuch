@@ -5,3 +5,4 @@ class Logbuch(object):
     from .buch import buch
     from .config import Config
     from .projpromp import prompProj
+    from .gitintegration import git
