@@ -11,6 +11,12 @@ if [[ -z $PYTHON ]]; then
   PYTHON=python3
 fi
 
+which ${PYTHON} &> /dev/null
+if [[ 1 -eq $? ]];then
+  echo "${PYTHON} does not exist as a command in your system!"
+  exit
+fi
+
 $PYTHON -c "
 import sys
 sys.exit(sys.version_info < (3,7))

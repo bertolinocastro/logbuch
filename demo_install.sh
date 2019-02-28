@@ -18,6 +18,12 @@ if [[ -z $PYTHON ]]; then
   PYTHON=python3
 fi
 
+which ${PYTHON} &> /dev/null
+if [[ 1 -eq $? ]];then
+  echo "${PYTHON} does not exist as a command in your system!"
+  return
+fi
+
 echo -e "Starting virtual environment creation...\n"
 
 $PYTHON -c "
