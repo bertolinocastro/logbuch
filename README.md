@@ -245,6 +245,7 @@ Finally, you can always use the `-h/--help` option to get information about Logb
 FYI:
 - ___Subject___ and ___Project___ names are allowed to have space. Their leading char will always be capitalized and the remaining lowered. Underscores will be converted to spaces.
 - Logbuch may handle cases that are not discussed in this README. If you get any trouble using Logbuch, please, let me know.
+- Any undefined option will be treated as a ___Subject___ name.
 
 ## Supported Markdown tags
 (~~not yet implemented~~)
