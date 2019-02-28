@@ -50,7 +50,7 @@ Logbuch depends on:
 6. Any text editor callable from terminal <sup>1</sup>
 7. Any _LaTeX_ compiler callable from terminal <sup>2</sup>
 
-<sup>1</sup> Commonly used are: vi, vim, nano, emacs.  
+<sup>1</sup> Commonly used are: vi, vim, nano, emacs, gedit.  
 <sup>2</sup> I would strongly suggest `latexmk` for this purpose, since it was the best in my tests.
 
 ### Automated install
@@ -94,7 +94,7 @@ _**Warning**_ _One may get the last command not to work even after installing `p
 
 ## Configuration
 
-After installing Logbuch, it will use its default configuration. This file is stored at `~/.logbuch/conf.cfg` You can change it at any time using the `-c` option.
+After installing Logbuch, it will use its default configuration, that is stored at `~/.logbuch/conf.cfg`. You can edit it at any time using the `-c` option.
 
 The default configuration file is as follows:
 
@@ -108,24 +108,26 @@ PDF_CMD=latexmk -pdf -silent %log_file%
 
 In parts:
 
-1. PROJECTS_FOLDER=/home/user/logbuch_projects
+1. `PROJECTS_FOLDER=/home/user/logbuch_projects`  
   It's the full path to where all projects will be stored as well as the compiled _LaTeX_ output. I would suggest it to be a git repository, as you will probably care about the history of your notes.
-2. ACTIVE_PROJECT=default
+2. `ACTIVE_PROJECT=default`  
   It's the name of the active _Project_ that Logbuch uses to create new _Subjects_. You should not care about this parameter, just don't let it empty, so it will use the entire _default_ as actual _Project_ name.
-3. EDITOR=vi
+3. `EDITOR=vi`  
   It's the command which Logbuch calls when you use any edition option. The command just needs to accept a file name as argument. This is not a problem, since the majority of command line text editors follows this rule.
-4. EXTENSION=.md
+4. `EXTENSION=.md`  
   It's the extension used on all _Subject_ text files. Logbuch does not discriminate which one is used. Just be advised that it saves and reads using the **same** extension, so do not change it without refactoring your old files extension.
-5. PDF_CMD=latexmk -pdf -silent %log_file%
+5. `PDF_CMD=latexmk -pdf -silent %log_file%`  
   It's the full command used to compile your _Subjects_ in a _LaTeX_ document. You can pass any arguments to your _LaTeX_ compiler. Just make sure that your command is the first space-ended string after the **=** and that it has `%log_file%`, as this is where the input **.tex** file will the replaced.
 
 ## Usage
 
 ## Credits
 
+- @bertolinocastro
+    Just the author of Logbuch.
 
-
-(falar sobre o labbook de bia?)
+- @waltercostamb
+    Mentor and author of a brilliant workshop showing all purposes of doing Lab-Book and her structured and logic way to deal with her research annotations. For more in-deep information, check her [Lab-Book](https://github.com/waltercostamb/Lab-Book) repository.
 
 ## License
 
