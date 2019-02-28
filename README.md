@@ -134,6 +134,7 @@ ACTIVE_PROJECT=default
 EDITOR=vi
 EXTENSION=.md
 PDF_CMD=latexmk -pdf -silent %log_file%
+G_AUTO_COMMIT=YES
 ```
 
 In parts:
@@ -152,6 +153,9 @@ In parts:
 
 5. `PDF_CMD`  
   It's the full command used to compile your ___Subjects___ in a _LaTeX_ document. You can pass any arguments to your _LaTeX_ compiler. Just make sure that your command is the first space-ended string after the __=__ and that it has `%log_file%`, as this is where the input __.tex__ file will the replaced.
+
+6. `G_AUTO_COMMIT`  
+  It's a flag. If `YES`, Logbuch will do a `git add` and `git commit` every time you change a ___Subject___, else it will do nothing. This is an optional config entry. The default is `YES`.
 
 FYI:
 - Each entry may have spaces before and after the __=__ sign.

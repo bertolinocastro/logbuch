@@ -104,6 +104,7 @@ class Md2Tex(object):
     def _headarise(self,s):
         return ' '.join(s.capitalize().split('_'))
 
+    # TODO: correct this double call to latex compiler. The command must be interpreted as group of commands separated by semicolon
     def compile(self):
         oldCd = os.getcwd()
         os.chdir(self._config.projsDir())

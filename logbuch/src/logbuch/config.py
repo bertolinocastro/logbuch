@@ -21,8 +21,9 @@ class Config(object):
     _content =  "PROJECTS_FOLDER=%s\n"+\
                 "ACTIVE_PROJECT=%s\n"+\
                 "EDITOR=%s\n"+\
-                "EXTENSION=%s\n"
-
+                "EXTENSION=%s\n"+\
+                "PDF_CMD=%s\n"+\
+                "G_AUTO_COMMIT=%s\n"
 
     _PROJS_FOLD = ''
     _ACT_PROJ = ''
@@ -33,6 +34,8 @@ class Config(object):
     _PDF_CMD_def = 'latexmk'
     _PDF_CMD_FULL_def = _PDF_CMD_def+' -pdf -silent %log_file%'
     _default_PDF_DIR = '~/.logbuch/tex_tmp'
+
+    _G_AUTO_COMMIT = None
 
     def __init__(self,make,list,remove,conf,proj,subject):
         self._get_cmd_args(make,list,remove,conf,proj,subject)
@@ -65,35 +68,40 @@ class Config(object):
             print('There is no configuration file in the system. Creating: %s'%self._base+'/'+self._confF)
             content = self._content%(
                 os.path.expanduser('~/logbuch_projects'),
-                'default', 'vi','.md')
+                'default', 'vi','.md',self._PDF_CMD_FULL_def,'YES')
             with open(self._base+'/'+self._confF,'w') as f:
                 f.write(content)
         # ---
 
+        # PROJECTS_FOLDER
         try:
             self._PROJS_FOLD = re.findall('PROJECTS_FOLDER\s*=\s*(.+)', content)[0]
         except:
             print('ERROR: Could not properly read PROJS_FOLD in configuration file. Backing to default.')
             self._PROJS_FOLD = os.path.expanduser('~/logbuch_projects')
 
+        # ACTIVE_PROJECT
         try:
             self._ACT_PROJ = re.findall('ACTIVE_PROJECT\s*=\s*(.+)', content)[0]
         except:
             print('ERROR: Could not properly read ACT_PROJ in configuration file. Backing to default.')
             self._ACT_PROJ = 'default'
 
+        # EXTENSION
         try:
             self._EXT = re.findall('EXTENSION\s*=\s*(.+)', content)[0]
         except:
             print('ERROR: Could not properly read EXTENSION in configuration file. Backing to default.')
             self._EXT = '.md'
 
+        # EDITOR
         try:
             self._EDITOR = re.findall('EDITOR\s*=\s*(.+)', content)[0]
         except:
             print('ERROR: Could not properly read the EDITOR in conf file. Using system\'s default or trying "vi" if none.')
             self._EDITOR = os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi'
 
+        # PDF_CMD
         try:
             tmp = re.findall('PDF_CMD\s*=\s*(.+)',content)
             if len(tmp)<1:
@@ -123,11 +131,21 @@ class Config(object):
         except:
             pass
 
+        # G_AUTO_COMMIT
+        try:
+            if 'G_AUTO_COMMIT' in content:
+                tmp = re.findall('G_AUTO_COMMIT\s*=\s*(.+)', content)[0]
+                self._G_AUTO_COMMIT = True if tmp == 'YES' else False
+            else:
+                self._G_AUTO_COMMIT = True
+        except:
+            print('ERROR: Could not properly read the G_AUTO_COMMIT in conf file. Using default flag "YES"')
+            self._G_AUTO_COMMIT = True
+
     def projsDir(self):
         return self._PROJS_FOLD
 
     def actProj(self):
-        #TODO: insert a way to get the actual project/it's the last one or the one sended to the command line
         return self._ACT_PROJ
 
     def editor(self):
@@ -160,6 +178,9 @@ class Config(object):
         cmd = v[0]
         args = v[1:]
         return [cmd,args]
+
+    def isAutoCommit(self):
+        return self._G_AUTO_COMMIT
 
 class NoLogFile(Exception):
     pass
