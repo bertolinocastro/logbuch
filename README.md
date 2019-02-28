@@ -8,15 +8,15 @@
 
 A less-do-more program to take your notes quickly before you forget them.
 
-It also compiles in LaTeX for your Lab-Book/research history. :-)
+It also compiles in LaTeX for your [Lab-Book](https://github.com/waltercostamb/Lab-Book)/research history. :-)
 
 ## Description
 
 Logbuch is a command line tool aimed to quickly take notes while you're closer to a terminal.
 
-Logbuch works handling _Markdown_ files. Each of these files is treated as a ___Subject___ and is where the notes are taken. Logbuch groups many _Subjects_ inside its ___Project___, as defined by the user.
+Logbuch works handling _Markdown_ files. Each of these files is treated as a ___Subject___ and is where the notes are taken. Logbuch groups many ___Subjects___ inside their ___Project___, as defined by the user.
 
-Each ___Subject___ content is converted from _Markdown_ to _LaTeX_ syntax and then becomes a _subsection_ inside its ___Project___ _section_. It can also handle figures from one's work/analysis.
+Each ___Subject___ content is converted from _Markdown_ to _LaTeX_ syntax and then becomes a _subsection_ inside its ___Project___ _section_, with the necessary conversions between the markup languages. It can also handle figures from work/analysis.
 
 ## Table of Contents
 
@@ -24,26 +24,25 @@ Each ___Subject___ content is converted from _Markdown_ to _LaTeX_ syntax and th
 - [Features](#features)
 - [Installation](#installation)
   - [Requirements](#requirements)
-  - [Automated install](#automated_install)
-  - [Manual install](#manual_install)
+  - [Automated install](#automated-install)
+  - [Manual install](#manual-install)
 - [Configuration](#configuration)
-- [Usage](#usage)
-  Options:
-    - [-rm/--remove](#-rm--remove-option)
-    - [-p/--proj](#-p--proj-option)
-    - [-l/--list](#-l--list-option)
-    - [-m/--make](#-m--make-option)
-    - [-g/--git](#-g--git-option)
-    - [-c/--conf](#-c--conf-option)
-    - [-h/--help](#-h--help-option)
-- [Supported Markdown tags](#supported_markdown_tags)
-- [Issues and desired features](#issues_and_desired_features)
+- [Usage](#usage)  
+  - [-rm/--remove](#-rm--remove-option)
+  - [-p/--proj](#-p--proj-option)
+  - [-l/--list](#-l--list-option)
+  - [-m/--make](#-m--make-option)
+  - [-g/--git](#-g--git-option)
+  - [-c/--conf](#-c--conf-option)
+  - [-h/--help](#-h--help-option)
+- [Supported Markdown tags](#supported-markdown-tags)
+- [Issues and desired features](#issues-and-desired-features)
 - [Credits](#credits)
 - [License](#license)
 
 ## Motivation
 
-As I am pursuing the scientific career, I have noticed that small, but no less important, information are lost quickly while doing day-by-day tasks. Such information can be the separation point between doing unnecessary rework and starting a new day at the next step.
+As I am pursuing the scientific career, I have noticed that small, but no less important, information are lost quickly while doing daily tasks. Such information can be the separation point between doing unnecessary rework and starting a new day at the next step.
 
 So, I saw that writing concise information, that one can remember without struggling the mind to know what that is supposed to mean, is a huge time improvement. For instance: remote meetings tasks, deliberations and agreements; internet how-to's; papers sentences that one used as reference for one's work or procedures; detailed notes of one's work issues and methodology; thoughts and impressions that one consider important to remember later on; etc.
 
@@ -56,7 +55,7 @@ Besides, I felt that writing them as fast as one can just open one's text editor
 - [x] Creation, edition and compilation to _LaTeX_
 - [ ] Conversion of _Markdown_ tags to _LaTeX_ ones
 - [ ] Integration with git
-- [ ] _What more? Feel free to ask desired features._
+- [ ] _Wamt more? Feel free to ask desired features as stated [here](#issues-and-desired-features)._
 
 ## Installation
 
@@ -80,6 +79,12 @@ Logbuch depends on:
 
 ### Automated install
 
+Beforehand, you must get your files:
+```sh
+$ git clone https://github.com/bertolinocastro/logbuch.git
+$ cd logbuch
+```
+
 To install Logbuch in a virtual environment, i.e., that works like a _container_, use `demo_install.sh` as follows:
 
 ```sh
@@ -97,7 +102,7 @@ $ PYTHON=python3.7 source ./demo_install.sh
 $ PYTHON=/usr/bin/python3.7 source ./demo_install.sh
 ```
 
-To install Logbuch system-wide, follow the same steps before using `install.sh` as follows:
+To install Logbuch system-wide, use `install.sh` script as follows:
 
 ```sh
 $ ./install.sh
@@ -133,19 +138,19 @@ PDF_CMD=latexmk -pdf -silent %log_file%
 
 In parts:
 
-1. `PROJECTS_FOLDER=/home/user/logbuch_projects`  
+1. `PROJECTS_FOLDER`  
   It's the full path to where all projects will be stored as well as the compiled _LaTeX_ output. I would suggest it to be a git repository, as you will probably care about the history of your notes.
 
-2. `ACTIVE_PROJECT=default`  
+2. `ACTIVE_PROJECT`  
   It's the name of the active ___Project___ that Logbuch uses to create new ___Subjects___. You should not care about this parameter, just don't let it empty, although Logbuch will use _default_ as actual ___Project___ name.
 
-3. `EDITOR=vi`  
+3. `EDITOR`  
   It's the command which Logbuch calls when you use any edition option. The command just needs to accept a file name as argument. This is not a problem, since the majority of command line text editors follows this rule.
 
-4. `EXTENSION=.md`  
+4. `EXTENSION`  
   It's the extension used on all ___Subject___ text files. Logbuch does not discriminate which one is used. Just be advised that it saves and reads using the __same__ extension, so do not change it without refactoring your old files extension.
 
-5. `PDF_CMD=latexmk -pdf -silent %log_file%`  
+5. `PDF_CMD`  
   It's the full command used to compile your ___Subjects___ in a _LaTeX_ document. You can pass any arguments to your _LaTeX_ compiler. Just make sure that your command is the first space-ended string after the __=__ and that it has `%log_file%`, as this is where the input __.tex__ file will the replaced.
 
 FYI:
@@ -158,7 +163,7 @@ The basic usage of Logbuch is creating/opening a ___Subject___ inside the active
 ```sh
 logbuch subject name with how many words you want
 ```
-this command will open your text editor with a predefined header. The header contains The ___Subject___ and the date of creation. You must write everything below the `# ------` line, because that information is handled by Logbuch.
+This command will open your text editor with a predefined header. The header contains the ___Subject___ and the date of creation. You must write everything below the `# ------` line, because information before it is handled by Logbuch.
 
 If you want to open your last edited ___Subject___ inside the active ___Project___, just type Logbuch without any argument:
 ```sh
@@ -193,7 +198,7 @@ This option lists the content of your active ___Project___  if no argument is pa
 logbuch -l
 ```
 
-As arguments, it accepts the name of any single ___Project___ you have in your ___Projects___ folder and prints its content or accepts the string "all" and prints the contents of all ___Projects___. As in `-p`, `*` sign represents which ___Project___ is active now.
+With arguments, it accepts the name of any single ___Project___ you have in your ___Projects___ folder and prints its ___Subjects___. It may also accept the string `all` and print the contents of all ___Projects___. As in `-p`, `*` sign represents which ___Project___ is active now.
 ```sh
 logbuch -l name of your project
 logbuch -l all
@@ -205,16 +210,16 @@ logbuch -l all
 This option will get all content below the `# ------` string inside your ___Subjects___ and put them as `\subsection{}` content in the compiled file.
 The ___Subject___ and the date of creation will become the subsection title and subtitle, respectively. Your ___Project___ will become a `\section{}` and its name will be the section title. The author of the compiled _LaTeX_ file is obtained from your system's user name.
 
-Using this option without arguments makes it compile for all ___Projects___ and save the _LaTeX_ output as `all.tex`.
+Using this option without arguments makes it compile for all ___Projects___ and save the _LaTeX_ data as `all.tex` and `all.pdf`.
 ```sh
 logbuch -m
 ```
-You may also pass a ___Project___ name, so Logbuch will compile just it with its contents.
+You may also pass a ___Project___ name, so Logbuch will compile only it with its contents.
 ```sh
 logbuch -m name of your project
 ```
 
-All outputs are saved in your ___Projects___ folder root and are name with your ___Project___ name followed by `.tex` extension for the _LaTeX_ inputs and `.pdf` for the outputs. Feel free to edit them as you wish.
+All outputs are saved in your ___Projects___ folder root and are named with your ___Project___ name followed by `.tex` extension for the _LaTeX_ input and `.pdf` for the output. Feel free to edit them as you wish.
 
 If you have an existing `.tex` file, Logbuch will prompt you if you want to overwrite it, so you can just recompile a previous `.tex` version.
 
@@ -235,13 +240,10 @@ Finally, you can always use the `-h/--help` option to get information about Logb
 
 FYI:
 - ___Subject___ and ___Project___ names are allowed to have space. Their leading char will always be capitalized and the remaining lowered. Underscores will be converted to spaces.
--
 - Logbuch may handle cases that are not discussed in this README. If you get any trouble using Logbuch, please, let me know.
 
 ## Supported Markdown tags
 (~~not yet implemented~~)
-
----
 
 ## Issues and desired features
 
