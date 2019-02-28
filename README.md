@@ -14,7 +14,7 @@ It also compiles in LaTeX for your [Lab-Book](https://github.com/waltercostamb/L
 
 Logbuch is a command line tool aimed to quickly take notes while you're closer to a terminal.
 
-Logbuch works handling _Markdown_ files. Each of these files is treated as a ___Subject___ and is where the notes are taken. Logbuch groups many ___Subjects___ inside their ___Project___, as defined by the user.
+Logbuch works handling _Markdown_ files. Each of these files is treated as a ___Subject___ and is where the notes are taken. Logbuch groups many ___Subjects___ inside their ___Projects___, as defined by the user.
 
 Each ___Subject___ content is converted from _Markdown_ to _LaTeX_ syntax and then becomes a _subsection_ inside its ___Project___ _section_, with the necessary conversions between the markup languages. It can also handle figures from work/analysis.
 
@@ -55,7 +55,7 @@ Besides, I felt that writing them as fast as one can just open one's text editor
 - [x] Creation, edition and compilation to _LaTeX_
 - [ ] Conversion of _Markdown_ tags to _LaTeX_ ones
 - [ ] Integration with git
-- [ ] _Wamt more? Feel free to ask desired features as stated [here](#issues-and-desired-features)._
+- [ ] _Want more? Feel free to ask desired features as stated [here](#issues-and-desired-features)._
 
 ## Installation
 
