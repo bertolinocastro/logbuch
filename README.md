@@ -173,6 +173,9 @@ If you want to open your last edited ___Subject___ inside the active ___Project_
 ```sh
 logbuch
 ```
+
+As stated in [config](#configuration) parameter `G_AUTO_COMMIT`, every time you change any ___Subject___ file, if Logbuch is in `auto commit mode`, it will try to `add` and `commit` that subject. In order to work, Logbuch expects that there is a `git` repository inside your ___Projects___ root folder.
+
 ---
 ###### `-rm/--remove` option
 
@@ -229,7 +232,22 @@ If you have an existing `.tex` file, Logbuch will prompt you if you want to over
 
 ---
 ###### `-g/--git` option
-(~~not implemented~~)
+
+This option is just a convenience to use `git` inside your ___Projects___ root folder without walking into it.
+
+This option works redirecting all arguments received to your `git` command in `PATH`. For instance, if you want to check your repository status:
+```sh
+logbuch -g status
+```
+
+To use this option, Logbuch expects that your ___Projects___ root folder is a `git` repository. You can, however, create a new one using Logbuch by just typing:
+```sh
+logbuch -g init
+logbuch -g add *
+logbuch -g commit -m "First commit."
+```
+
+This option does just calls `git` plus the arguments you passed. I would suggest you to check the [wrapper code](logbuch/src/logbuch/git.py) and [git integration code](logbuch/src/logbuch/gitintegration.py) if you are not feeling safe.
 
 ---
 ###### `-c/--conf` option
