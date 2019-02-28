@@ -31,7 +31,7 @@ Each ___Subject___ content is converted from _Markdown_ to _LaTeX_ syntax and th
   - [-rm/--remove](#-rm--remove-option)
   - [-p/--proj](#-p--proj-option)
   - [-l/--list](#-l--list-option)
-  - [-m/--make](#-m--make-option)
+  - [-mk/--make](#-mk--make-option)
   - [-g/--git](#-g--git-option)
   - [-c/--conf](#-c--conf-option)
   - [-h/--help](#-h--help-option)
@@ -209,18 +209,18 @@ logbuch -l all
 ```
 
 ---
-###### `-m/--make` option
+###### `-mk/--make` option
 
 This option will get all content below the `# ------` string inside your ___Subjects___ and put them as `\subsection{}` content in the compiled file.
 The ___Subject___ and the date of creation will become the subsection title and subtitle, respectively. Your ___Project___ will become a `\section{}` and its name will be the section title. The author of the compiled _LaTeX_ file is obtained from your system's user name.
 
 Using this option without arguments makes it compile for all ___Projects___ and save the _LaTeX_ data as `all.tex` and `all.pdf`.
 ```sh
-logbuch -m
+logbuch -mk
 ```
 You may also pass a ___Project___ name, so Logbuch will compile only it with its contents.
 ```sh
-logbuch -m name of your project
+logbuch -mk name of your project
 ```
 
 All outputs are saved in your ___Projects___ folder root and are named with your ___Project___ name followed by `.tex` extension for the _LaTeX_ input and `.pdf` for the output. Feel free to edit them as you wish.
