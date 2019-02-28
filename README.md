@@ -53,8 +53,8 @@ Besides, I felt that writing them as fast as one can just open one's text editor
 - [x] Creation, edition, save, deletion and listing of ___Subjects___
 - [x] Creation, deletion and listing of ___Projects___
 - [x] Creation, edition and compilation to _LaTeX_
+- [x] Integration with git
 - [ ] Conversion of _Markdown_ tags to _LaTeX_ ones
-- [ ] Integration with git
 - [ ] _Want more? Feel free to ask desired features as stated [here](#issues-and-desired-features)._
 
 ## Installation
@@ -101,7 +101,7 @@ $ PYTHON=python3.7 source ./demo_install.sh
 # or
 $ PYTHON=/usr/bin/python3.7 source ./demo_install.sh
 ```
-
+---
 To install Logbuch system-wide, use `install.sh` script as follows:
 
 ```sh
@@ -240,14 +240,14 @@ This option works redirecting all arguments received to your `git` command in `P
 logbuch -g status
 ```
 
-To use this option, Logbuch expects that your ___Projects___ root folder is a `git` repository. You can, however, create a new one using Logbuch by just typing:
+To use this option, Logbuch expects that your ___Projects___ root folder to be a `git` repository. You can, however, create a new one using Logbuch by just typing:
 ```sh
 logbuch -g init
-logbuch -g add *
+logbuch -g add --all
 logbuch -g commit -m "First commit."
 ```
 
-This option does just calls `git` plus the arguments you passed. I would suggest you to check the [wrapper code](logbuch/src/logbuch/git.py) and [git integration code](logbuch/src/logbuch/gitintegration.py) if you are not feeling safe.
+This option does just call `git` plus the arguments you passed. I would suggest you to check the [wrapper code](logbuch/src/logbuch/git.py) and [git integration code](logbuch/src/logbuch/gitintegration.py) if you are not feeling safe to use it.
 
 ---
 ###### `-c/--conf` option
