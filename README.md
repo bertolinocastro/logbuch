@@ -54,6 +54,7 @@ Besides, I felt that writing them as fast as one can just open one's text editor
 - [x] Creation, deletion and listing of ___Projects___
 - [x] Creation, edition and compilation to _LaTeX_
 - [x] Integration with git
+- [ ] Bash completion
 - [ ] Conversion of _Markdown_ tags to _LaTeX_ ones
 - [ ] _Want more? Feel free to ask desired features as stated [here](#issues-and-desired-features)._
 
