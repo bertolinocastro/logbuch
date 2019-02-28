@@ -7,9 +7,9 @@ __version__ = '1.0'
 @click.command(context_settings=dict(max_content_width=120,help_option_names=['-h', '--help']))
 @click.option('-m','--make',is_flag=True,help='Compile subjects to a .tex file using defined LaTeX compiler')
 @click.option('-l','--list',is_flag=True,metavar='[project]',help='List contents of project passed as SUBJECT. If "all" is passed, list all projects content. If nothing is passed, defaults to list all subjects inside actual project')
+@click.option('-p','--proj',is_flag=True,help='Prompt to choose the active project. If you pass an argument, it will create and/or activate that.')
 @click.option('-rm','--remove',is_flag=True,help='Remove a Subject from active Project')
 @click.option('-c','--conf',is_flag=True,help='Open the configuration file [default ~/.logbuch/conf.cfg]')
-@click.option('-p','--proj',is_flag=True,help='Prompt to choose the active project. If you pass an argument, it will create and/or activate that.')
 @click.argument('subject',nargs=-1)
 def cli(make,list,remove,conf,proj,subject):
     """Logbuch\t(version 1.0)
