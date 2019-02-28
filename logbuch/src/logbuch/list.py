@@ -16,12 +16,15 @@ def listDir(path,proj):
         sys.exit()
     dic = {}
     if proj != 'all':
+        if proj[0] == '.':
+            print('Hidden project name "%s" is not allowed. It will not be read.'%proj)
+            sys.exit()
         if not os.path.exists(path+'/'+proj):
             print('Project folder absent! %s\nPass an existing project as argument. Alternatively, check your active project with "-c" or select one with "-p" options.'%(path+'/'+proj))
             sys.exit()
         projs = [proj]
     else:
-        projs = [x for x in os.listdir(path) if os.path.isdir(path+'/'+x)]
+        projs = [x for x in os.listdir(path) if '.' != x[0] and os.path.isdir(path+'/'+x)]
 
     for proj in projs:
         if proj not in dic:

@@ -29,6 +29,8 @@ class Topic(object):
 
         self._conf = conf
 
+        self._check_hidden(subject)
+
         # checking wheter there is the base folder
         if not os.path.exists(conf.projsDir()):
             print('No root projects folder found. Creating %s'%self._base)
@@ -42,7 +44,7 @@ class Topic(object):
             # check if it already exists
             self._isNew = not os.path.exists(self._base+'/'+self._subject+self._ext)
         else:
-            files = [x for x in os.listdir(self._base) if self._ext in x]
+            files = [x for x in os.listdir(self._base) if '.' != x[0] self._ext in x]
             if len(files) > 0:
                 tstamps = [os.path.getmtime(self._base+'/'+file) for file in files]
                 id = tstamps.index(max(tstamps))
@@ -57,6 +59,11 @@ class Topic(object):
 
         self._path = self._base +'/'+ self._subject + self._ext
         self._get_contents()
+
+    def _check_hidden(self,subj):
+        if subj and '.' == subj[0]:
+            print('Hidden subjects "%s" are not allowed!'%subj)
+            sys.exit()
 
     def _get_subject(self):
         self._subject = input('Empty %s folder. Please write a subject: '%self._base)

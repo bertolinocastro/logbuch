@@ -29,6 +29,10 @@ def cli(make,list,remove,conf,proj,git,subject):
         print('Sorry, but only one option is accepted')
         sys.exit(1)
 
+    # allowing only git redirection mode to receive '.' as argument beginning
+    if not git and checkHidden(subject):
+        print('Hidden Projects or Subjects are not allowed! "%s"'%subject)
+        sys.exit()
 
     config = Logbuch.Config(make,list,remove,conf,proj,git,subject)
 
@@ -53,3 +57,6 @@ def checkArgs(make,list,remove,conf,proj,git,subject):
 
 def treatInput(s):
     return ' '.join(s).lower()
+
+def checkHidden(s):
+    return s and '.' == s.strip()[0]

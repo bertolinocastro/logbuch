@@ -11,6 +11,9 @@ def prompProj(config,proj):
     lis = sorted(listDir(path))
 
     if proj:
+        if proj[0] == '.':
+            print('Hidden project name "%s" is not allowed.'%proj)
+            sys.exit()
         if proj in lis:
             print('Switching to existing project "%s"\n'%proj)
         else:
@@ -60,7 +63,7 @@ def listDir(path):
         print('Projects folder absent! %s'%path)
         sys.exit()
 
-    projs = [x for x in os.listdir(path) if os.path.isdir(path+'/'+x)]
+    projs = [x for x in os.listdir(path) if '.' != x[0] and os.path.isdir(path+'/'+x)]
     return projs
 
 # it prints the entire found project tree

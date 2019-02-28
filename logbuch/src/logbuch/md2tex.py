@@ -144,7 +144,7 @@ def listDir(path,proj):
     if proj:
         projs = [proj]
     else:
-        projs = [x for x in os.listdir(path) if os.path.isdir(path+'/'+x)]
+        projs = [x for x in os.listdir(path) if '.' != x[0] os.path.isdir(path+'/'+x)]
 
     for proj in projs:
         if proj not in dic:
