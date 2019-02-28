@@ -240,7 +240,7 @@ This option works redirecting all arguments received to your `git` command in `P
 logbuch -g status
 ```
 
-To use this option, Logbuch expects that your ___Projects___ root folder to be a `git` repository. You can, however, create a new one using Logbuch by just typing:
+To use this option, Logbuch expects your ___Projects___ root folder to be a `git` repository. You can, however, create a new one using Logbuch by just typing:
 ```sh
 logbuch -g init
 logbuch -g add --all
