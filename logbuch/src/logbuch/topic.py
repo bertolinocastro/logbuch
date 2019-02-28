@@ -30,7 +30,11 @@ class Topic(object):
         self._conf = conf
 
         # checking wheter there is the base folder
-        # if not os.path.exists(self._base):
+        if not os.path.exists(conf.projsDir()):
+            print('No root projects folder found. Creating %s'%self._base)
+        elif not os.path.exists(self._base):
+            print('No active project folder found. Creating %s'%self._base)
+
         pathlib.Path(self._base).mkdir(parents=True, exist_ok=True)
 
         if subject:
