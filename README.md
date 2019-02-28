@@ -1,4 +1,5 @@
 <img src="https://bertolinocastro.github.io/logbuch/logo.png" align="right" title="Logbuch logo">
+
 [![version](https://img.shields.io/badge/version-v1.0-orange.svg)](https://github.com/bertolinocastro/logbuch)
 
 # Logbuch
