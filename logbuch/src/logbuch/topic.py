@@ -78,13 +78,14 @@ class Topic(object):
                     date = f.readline().strip()
                     self._text = ''.join(f.readlines()[2:])
 
-                    if not 'Subject: ' in subj or self._headarise(self._subject) != subj[9:] or \
-                        not 'Date: ' in date or not self._check_date(date[6:]):
+                    sb = re.fullmatch('Subject: (.+)',subj)
+                    dt = re.fullmatch('Date: (\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2})',date)
+                    if sb and sb.groups()[0] == self._headarise(self._subject) and dt:
+                        self._header = sb.groups()[0]
+                        self._date = dt.groups()[0]
+                    else:
                         print('File does not match the standard header.')
                         overWrite = True
-                    else:
-                        self._header = subj
-                        self._date = date
                 else:
                     print('File does not have the minimum content.')
                     overWrite = True
@@ -177,6 +178,6 @@ class Topic(object):
             content = f.readlines()[4:] # skipping header and dotted line
             self._text = ''.join(content)
         return {'header':   self._headarise(self._subject),
-                'date':     self._date[-10:],
+                'date':     self._date,
                 'text':     self._text
         }
