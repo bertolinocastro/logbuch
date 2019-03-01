@@ -14,6 +14,7 @@ class Md2Tex(object):
         r'\documentclass[12pt]{article}',
         r'\usepackage[utf8x]{inputenc}',
         r'\usepackage[left=3.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}',
+        r'\usepackage[bookmarks]{hyperref}',
         r'\usepackage{helvet}',
         r'\renewcommand{\familydefault}{\sfdefault}'
         ])
