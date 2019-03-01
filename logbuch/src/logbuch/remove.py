@@ -27,6 +27,7 @@ def remove(file,config):
     else:
         print('This subject doest not exist in "%s" project!\nUse -l option to check existing subjects'%actv)
 
+# TODO: rewrite this function using Topic class
 def fileInfo(file):
     with open(file,'r') as f:
         content = f.read()
