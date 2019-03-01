@@ -3,6 +3,7 @@ import shutil
 import sys
 from .topic import Topic
 import subprocess
+import time
 import click
 import getpass
 
@@ -68,14 +69,17 @@ class Md2Tex(object):
                     self._convert_md(None)
                 ])
 
-            for topic in dic[proj]:
-                top = Topic(topic,config)
-                cont = top.getFileContents()
+            topC = [Topic(topic,config).getFileContents() for topic in dic[proj]]
+            date = [_tstamp(cont['date']) for cont in topC]
+            ordr = _argsort(date)
+
+            for itopic in ordr:
+                cont = topC[itopic]
                 self._add_content([
                     self._tex_subsection%(cont['header'],cont['date'],cont['header'],cont['date']),
                     self._convert_md(cont['text'])
                 ])
-
+                
         self._add_content([self._tex_end])
 
     # TODO: call convert md 2 latex procedures
@@ -158,3 +162,9 @@ def listDir(path,proj):
 
 def _ignoreExt(s):
     return s != '.tex' and s != '.swp'
+
+def _argsort(seq):
+    return sorted(range(len(seq)), key=seq.__getitem__)
+
+def _tstamp(s):
+    return time.mktime(time.strptime(s, "%d.%m.%Y %H:%M"))
