@@ -31,7 +31,7 @@ def fileInfo(file):
     with open(file,'r') as f:
         content = f.read()
         try:
-            res  = '\nDate of creation: %s\n'%re.findall('Date: (\d{2}\.\d{2}\.\d{4})',content)[0]
+            res  = '\nDate of creation: %s\n'%re.findall('Date: (\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2})',content)[0]
             res += 'Contents: %d lines'%len(re.findall('\n',content))
             res += ' and %d characters\n'%len(content)
         except:

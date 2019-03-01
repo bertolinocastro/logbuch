@@ -18,7 +18,7 @@ class Topic(object):
 
     _header = ''
     _date = ''
-    _text = []
+    _text = ''
 
     _file_len = 0
     _file_lines = 0
@@ -66,7 +66,7 @@ class Topic(object):
             sys.exit()
 
     def _get_subject(self):
-        self._subject = input('Empty %s folder. Please write a subject: '%self._base)
+        self._subject = input('Empty "%s" folder. Please write a subject: '%self._base)
 
     def _get_contents(self):
         with open(self._path, 'a+') as f:
@@ -76,6 +76,7 @@ class Topic(object):
                 if self._file_has_content(f):
                     subj = f.readline().strip()
                     date = f.readline().strip()
+                    self._text = ''.join(f.readlines()[2:])
 
                     if not 'Subject: ' in subj or self._headarise(self._subject) != subj[9:] or \
                         not 'Date: ' in date or not self._check_date(date[6:]):
@@ -126,12 +127,13 @@ class Topic(object):
         f.write('Subject: %s\n'%self._header)
         f.write('Date: %s\n'%self._date)
         f.write('\n# -------\n')
+        f.write(self._text)
 
     def _headarise(self,s):
         return ' '.join(s.capitalize().split('_'))
 
     def _check_date(self,s):
-        pattern = re.compile('^\d{2}\.\d{2}\.\d{4}$')
+        pattern = re.compile('^\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2}$')
         return bool(pattern.match(s))
 
     def _get_header(self):
@@ -139,7 +141,7 @@ class Topic(object):
 
     def _get_date(self):
         now = datetime.datetime.now()
-        self._date = now.strftime("%d.%m.%Y")
+        self._date = now.strftime("%d.%m.%Y %H:%M")
 
     def path(self):
         return self._path
