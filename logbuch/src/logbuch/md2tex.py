@@ -109,20 +109,21 @@ class Md2Tex(object):
         oldCd = os.getcwd()
         os.chdir(self._config.projsDir())
 
-        cmd,args = self._config.pdfCompiler()
-        args = [x.replace('%log_file%',self._texFile) for x in args]
-        ret = subprocess.run([cmd]+args,capture_output=True,check=True)
-        if ret.returncode != 0:
-            print('Something went wrong with compilation step. Error message below:')
-            print(ret.stdout)
-            sys.exit()
+        cmds = self._config.pdfCompiler()
 
-        args = ['-c','-silent'] # cleaning step
-        ret = subprocess.run([cmd]+args,capture_output=True,check=True)
-        if ret.returncode != 0:
-            print('Something went wrong with compilation step. Error message below:')
-            print(ret.stdout)
-            sys.exit()
+        for cmdi in cmds:
+            cmd = list(cmdi)[0]
+            args = cmdi[cmd]
+            args = [x.replace('%log_file%',self._texFile) for x in args]
+
+            try:
+                ret = subprocess.run([cmd]+args,capture_output=True,check=True)
+                if ret.returncode != 0:
+                    raise Exception(ret.stdout)
+            except Exception as e:
+                    print('Something went wrong with compilation step. Error message below:\n')
+                    print(repr(e))
+                    sys.exit()
 
         os.chdir(oldCd)
 
@@ -144,7 +145,7 @@ def listDir(path,proj):
     if proj:
         projs = [proj]
     else:
-        projs = [x for x in os.listdir(path) if '.' != x[0] os.path.isdir(path+'/'+x)]
+        projs = [x for x in os.listdir(path) if '.' != x[0] and os.path.isdir(path+'/'+x)]
 
     for proj in projs:
         if proj not in dic:

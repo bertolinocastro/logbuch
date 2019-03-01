@@ -31,9 +31,10 @@ class Config(object):
     _EDITOR = ''
     _EXT = ''
 
-    _PDF_CMD = ''
+    _PDF_CMD = None
     _PDF_CMD_def = 'latexmk'
-    _PDF_CMD_FULL_def = _PDF_CMD_def+' -pdf -silent %log_file%'
+    _PDF_CMD_FULL_def  = _PDF_CMD_def+' -pdf -silent %log_file%'
+    _PDF_CMD_CLEAR_def = _PDF_CMD_def+' -c -silent'
     _default_PDF_DIR = '~/.logbuch/tex_tmp'
 
     _G_AUTO_COMMIT = None
@@ -107,20 +108,18 @@ class Config(object):
         try:
             tmp = re.findall('PDF_CMD\s*=\s*(.+)',content)
             if len(tmp)<1:
-                if self._make:
-                    raise NoLaTeXTool
-                else:
-                    raise
-            self._PDF_CMD = tmp
-            if not '%log_file%' in self._PDF_CMD:
-                print('PDF_CMD parameter in config file has no %log_file% as argument!')
+                raise NoLaTeXTool
+            self._PDF_CMD = [x.strip() for x in tmp[0].split(';')]
+            if not any('%log_file%' in x for x in self._PDF_CMD):
+                print('PDF_CMD parameter in config file has no %log_file% as argument for any command!')
                 if self._make:
                     raise NoLogFile
             else:
-                name = self._PDF_CMD.split(' ')[0]
-                if self._make and not self._hasTool(name):
-                    print('Your system does not have "%s" installed. Checking %s...'%(name,self._PDF_CMD_def))
-                    raise NoLaTeXTool
+                for cmd in self._PDF_CMD:
+                    name = cmd.split(' ')[0]
+                    if self._make and not self._hasTool(name):
+                        print('Your system does not have "%s" installed. Try default commands for safety reasons.'%(name))
+                        raise NoLaTeXTool
         except NoLogFile:
             sys.exit()
         except NoLaTeXTool:
@@ -129,9 +128,9 @@ class Config(object):
                 if self._make:
                     sys.exit()
             else:
-                self._PDF_CMD = self._PDF_CMD_FULL_def
-        except:
-            pass
+                self._PDF_CMD = [self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]
+        except Exception as e:
+            print('ERROR: Unexpected error ocurred while triying to read PDF_CMD parameter in config file...\n%s'%repr(e))
 
         # G_AUTO_COMMIT
         try:
@@ -165,7 +164,9 @@ class Config(object):
         self._confSave()
 
     def _confSave(self):
-        content = self._content%(self._PROJS_FOLD,self._ACT_PROJ,self._EDITOR,self._EXT)
+        print(self._PDF_CMD)
+        content = self._content%(self._PROJS_FOLD,self._ACT_PROJ,self._EDITOR,self._EXT,
+            ';'.join(self._PDF_CMD),self._G_AUTO_COMMIT)
         with open(self._base+'/'+self._confF,'w') as f:
             f.write(content)
 
@@ -176,10 +177,11 @@ class Config(object):
         return which(name) is not None
 
     def pdfCompiler(self):
-        v = self._PDF_CMD.split(' ')
-        cmd = v[0]
-        args = v[1:]
-        return [cmd,args]
+        cmd = []
+        for c in self._PDF_CMD:
+            cc = c.split(' ')
+            cmd.append({cc[0]:cc[1:]})
+        return cmd
 
     def isAutoCommit(self):
         return self._G_AUTO_COMMIT
