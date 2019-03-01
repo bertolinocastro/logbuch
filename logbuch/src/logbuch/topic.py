@@ -44,7 +44,7 @@ class Topic(object):
             # check if it already exists
             self._isNew = not os.path.exists(self._base+'/'+self._subject+self._ext)
         else:
-            files = [x for x in os.listdir(self._base) if '.' != x[0] self._ext in x]
+            files = [x for x in os.listdir(self._base) if '.' != x[0] and self._ext in x]
             if len(files) > 0:
                 tstamps = [os.path.getmtime(self._base+'/'+file) for file in files]
                 id = tstamps.index(max(tstamps))
