@@ -136,11 +136,11 @@ class Config(object):
         try:
             if 'G_AUTO_COMMIT' in content:
                 tmp = re.findall('G_AUTO_COMMIT\s*=\s*(.+)', content)[0]
-                self._G_AUTO_COMMIT = True if tmp == 'YES' else False
+                self._G_AUTO_COMMIT = True if tmp == 'True' else False
             else:
                 self._G_AUTO_COMMIT = True
         except:
-            print('ERROR: Could not properly read the G_AUTO_COMMIT in conf file. Using default flag "YES"')
+            print('ERROR: Could not properly read the G_AUTO_COMMIT in conf file. Using default flag "True"')
             self._G_AUTO_COMMIT = True
 
     def projsDir(self):
@@ -166,7 +166,7 @@ class Config(object):
     def _confSave(self):
         print(self._PDF_CMD)
         content = self._content%(self._PROJS_FOLD,self._ACT_PROJ,self._EDITOR,self._EXT,
-            ';'.join(self._PDF_CMD),self._G_AUTO_COMMIT)
+            ';'.join(self._PDF_CMD),'True' if self._G_AUTO_COMMIT else 'False')
         with open(self._base+'/'+self._confF,'w') as f:
             f.write(content)
 
