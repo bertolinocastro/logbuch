@@ -79,7 +79,7 @@ class Md2Tex(object):
                     self._tex_subsection%(cont['header'],cont['date'],cont['header'],cont['date']),
                     self._convert_md(cont['text'])
                 ])
-                
+
         self._add_content([self._tex_end])
 
     # TODO: call convert md 2 latex procedures
