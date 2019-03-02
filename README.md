@@ -54,7 +54,7 @@ Besides, I felt that writing them as fast as one can just open one's text editor
 - [x] Creation, deletion and listing of ___Projects___
 - [x] Creation, edition and compilation to _LaTeX_
 - [x] Integration with git
-- [ ] Bash completion
+- [x] Bash completion
 - [ ] Conversion of _Markdown_ tags to _LaTeX_ ones
 - [ ] _Want more? Feel free to ask desired features as stated [here](#issues-and-desired-features)._
 
@@ -242,6 +242,8 @@ If you have an existing `.tex` file, Logbuch will prompt you if you want to over
 
 ---
 ###### `-g/--git` option
+
+_Warning: Bash Completion is not working properly with this option when a `git`'s option is typed right after the `--`. I made a Pull Request to the Click developers in order to solve this. As soon as possible I will update this._
 
 This option is just a convenience to use `git` inside your ___Projects___ root folder without walking into it. In order to use it properly, you must pass double dashes `--` right after `-g/--git`, else Logbuch will understand any dash-started string as another option.
 
