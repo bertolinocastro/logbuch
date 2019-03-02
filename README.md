@@ -162,7 +162,7 @@ In parts:
 
 FYI:
 - Each entry may have spaces before and after the __=__ sign.
-- `PDF_CMD` may have a sequence of commands separated by `;`. (~~not yet implemented~~)
+- `PDF_CMD` may have a sequence of commands separated by `;`.
 
 ## Usage
 
