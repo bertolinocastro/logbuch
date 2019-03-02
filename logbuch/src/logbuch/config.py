@@ -164,7 +164,6 @@ class Config(object):
         self._confSave()
 
     def _confSave(self):
-        print(self._PDF_CMD)
         content = self._content%(self._PROJS_FOLD,self._ACT_PROJ,self._EDITOR,self._EXT,
             ';'.join(self._PDF_CMD),'True' if self._G_AUTO_COMMIT else 'False')
         with open(self._base+'/'+self._confF,'w') as f:

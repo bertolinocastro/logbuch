@@ -16,7 +16,7 @@ def remove(file,config):
 
     files = os.listdir(path+'/'+actv)
     if len(files) <= 0:
-        print('Actual project is empty!\nUse -l option to check existing subjects')
+        print('Actual project is empty!\nUse "-l all" option to check other projects contents')
         sys.exit(0)
 
     if os.path.exists(path+'/'+actv+'/'+file+ext):
