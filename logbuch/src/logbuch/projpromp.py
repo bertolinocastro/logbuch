@@ -40,12 +40,12 @@ def prompProj(config,proj):
                 sys.exit()
             if click.confirm('\nProject "%s" is going to be deleted. Are you sure?'%lis[res]):
                 delProj(path,lis[res])
-                print('Deleted.')
-                lis.remove(lis[res])
+                print('Deleted.\n')
                 if len(lis)<1:
                     print('Empty Projects folder!')
                     config.setActive('default')
                 elif lis[res] == act:
+                    lis.remove(lis[res])
                     print('Switching to %s\n'%lis[0])
                     config.setActive(lis[0])
         else:
