@@ -178,13 +178,13 @@ logbuch
 ```
 
 If you want to access a ___Project___ or a ___Subject___ that starts with a `-` or want to safely pass arguments to the `-g/--git` [interface option](#-g--git-option), you must pass `--` right after your first option. For instance:
-
-As stated in [config](#configuration) parameter `G_AUTO_COMMIT`, every time you change any ___Subject___ file, if Logbuch is in `auto commit mode`, it will try to `add` and `commit` that subject. In order to work, Logbuch expects that there is a `git` repository inside your ___Projects___ root folder.
 ```sh
 logbuch -- --subject -starting--- with -dashes
 logbuch -l -- -project --starting-- -with- dashes
 logbuch -g -- commit -m "A safely passed commit"
 ```
+
+As stated in [config](#configuration) parameter `G_AUTO_COMMIT`, every time you change any ___Subject___ file, if Logbuch is in `auto commit mode`, it will try to `add` and `commit` that subject. In order to work, Logbuch expects that there is a `git` repository inside your ___Projects___ root folder.
 
 ---
 ###### `-rm/--remove` option
