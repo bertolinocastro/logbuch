@@ -64,6 +64,8 @@ Logbuch is written with _setuptools_, as it's aimed to be easy to install.
 
 **Warning:** Logbuch was only tested at Linux environments (Ubuntu specifically), so if any issues occur on your installation, please let me know.
 
+__Warning 2:__ Logbuch will append an `eval` command to your user's shell starter script. At this moment, just `.bashrc` is supported. After installing, it will work on your next login.
+
 ### Requirements
 
 Logbuch depends on:
@@ -175,7 +177,14 @@ If you want to open your last edited ___Subject___ inside the active ___Project_
 logbuch
 ```
 
+If you want to access a ___Project___ or a ___Subject___ that starts with a `-` or want to safely pass arguments to the `-g/--git` [interface option](#-g--git-option), you must pass `--` right after your first option. For instance:
+
 As stated in [config](#configuration) parameter `G_AUTO_COMMIT`, every time you change any ___Subject___ file, if Logbuch is in `auto commit mode`, it will try to `add` and `commit` that subject. In order to work, Logbuch expects that there is a `git` repository inside your ___Projects___ root folder.
+```sh
+logbuch -- --subject -starting--- with -dashes
+logbuch -l -- -project --starting-- -with- dashes
+logbuch -g -- commit -m "A safely passed commit"
+```
 
 ---
 ###### `-rm/--remove` option
@@ -234,18 +243,19 @@ If you have an existing `.tex` file, Logbuch will prompt you if you want to over
 ---
 ###### `-g/--git` option
 
-This option is just a convenience to use `git` inside your ___Projects___ root folder without walking into it.
+This option is just a convenience to use `git` inside your ___Projects___ root folder without walking into it. In order to use it properly, you must pass double dashes `--` right after `-g/--git`, else Logbuch will understand any dash-started string as another option.
 
 This option works redirecting all arguments received to your `git` command in `PATH`. For instance, if you want to check your repository status:
 ```sh
 logbuch -g status
+logbuch -g -- status
 ```
 
 To use this option, Logbuch expects your ___Projects___ root folder to be a `git` repository. You can, however, create a new one using Logbuch by just typing:
 ```sh
 logbuch -g init
-logbuch -g add --all
-logbuch -g commit -m "First commit."
+logbuch -g -- add --all
+logbuch -g -- commit -m "First commit."
 ```
 
 This option does just call `git` plus the arguments you passed. I would suggest you to check the [wrapper code](logbuch/src/logbuch/git.py) and [git integration code](logbuch/src/logbuch/gitintegration.py) if you are not feeling safe to use it.
@@ -264,7 +274,7 @@ Finally, you can always use the `-h/--help` option to get information about Logb
 FYI:
 - ___Subject___ and ___Project___ names are allowed to have space. Their leading char will always be capitalized and the remaining lowered. Underscores will be converted to spaces. They cannot start with a `.` because they will be ignored by other Logbuch functions.
 - Logbuch may handle cases that are not discussed in this README. If you get any trouble using Logbuch, please, let me know.
-- Any undefined option will be treated as a ___Subject___ name.
+- Any dash-started string will be treated as an option if you do not use the double dash `--` separator. You shall use it right after the first option.
 
 ## Supported Markdown tags
 (~~not yet implemented~~)
@@ -273,7 +283,7 @@ FYI:
 
 Report any issues you may find at the [repository Issues page](https://github.com/bertolinocastro/logbuch/issues).
 
-If you wish any new feature to be added in Logbuch, please, do not hesitate to let me know it! Use the Issues page and label it with the `enhancement` label.
+If you wish any new feature to be added in Logbuch, please, do not hesitate to let me know it! Use the Issues page and tell me what you want. :-)
 
 All criticisms and suggestions are very welcome!
 
