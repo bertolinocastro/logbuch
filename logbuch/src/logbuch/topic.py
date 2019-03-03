@@ -66,7 +66,7 @@ class Topic(object):
             sys.exit()
 
     def _get_subject(self):
-        self._subject = input('Empty "%s" folder. Please write a subject: '%self._base)
+        self._subject = self._file_titable(input('Empty "%s" folder. Please write a subject: '%self._base))
 
     def _get_contents(self):
         with open(self._path, 'a+') as f:
