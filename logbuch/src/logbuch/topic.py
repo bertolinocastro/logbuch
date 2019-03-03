@@ -23,10 +23,13 @@ class Topic(object):
     _file_len = 0
     _file_lines = 0
 
-    def __init__(self,subject,conf):
-        self._base = conf.projsDir()+'/'+conf.actProj()
-        self._ext = conf.getExt()
+    def __init__(self,subject,conf,proj=None):
+        if proj is None:
+            self._base = conf.projsDir()+'/'+conf.actProj()
+        else:
+            self._base = conf.projsDir()+'/'+proj
 
+        self._ext = conf.getExt()
         self._conf = conf
 
         self._check_hidden(subject)
@@ -84,10 +87,10 @@ class Topic(object):
                         self._header = sb.groups()[0]
                         self._date = dt.groups()[0]
                     else:
-                        print('File does not match the standard header.')
+                        print('"%s" does not match the standard header.'%self._headarise(self._subject))
                         overWrite = True
                 else:
-                    print('File does not have the minimum content.')
+                    print('"%s" does not have the minimum content.'%self._headarise(self._subject))
                     overWrite = True
 
                 if overWrite:
@@ -171,7 +174,7 @@ class Topic(object):
         return 'y' == res or 'Y' == res
 
     def _file_titable(self,s):
-        return '_'.join(s.split(' ')).replace(self._ext,'')
+        return '_'.join(s.lower().split(' ')).replace(self._ext,'')
 
     def getFileContents(self):
         with open(self._path, 'r') as f:
