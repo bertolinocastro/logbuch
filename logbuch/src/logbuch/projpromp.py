@@ -2,6 +2,7 @@ import os
 import shutil
 import sys
 import click
+import readline
 
 def prompProj(config,proj):
     path = config.projsDir()

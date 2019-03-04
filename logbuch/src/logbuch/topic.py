@@ -6,6 +6,7 @@ import re
 import time
 import getpass
 import difflib
+import readline
 
 from .git import Git
 
