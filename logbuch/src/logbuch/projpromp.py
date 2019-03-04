@@ -8,17 +8,19 @@ def prompProj(config,proj):
     path = config.projsDir()
     act = config.actProj()
 
+    proj = _file_titable(proj)
+
     # listing topics inside active or all projects
     lis = sorted(listDir(path))
 
     if proj:
         if proj[0] == '.':
-            print('Hidden project name "%s" is not allowed.'%proj)
+            print('Hidden project name "%s" is not allowed.'%_headarise(proj))
             sys.exit()
         if proj in lis:
-            print('Switching to existing project "%s"\n'%proj)
+            print('Switching to existing project "%s"\n'%_headarise(proj))
         else:
-            print('Creating new project "%s" and setting as active\n'%proj)
+            print('Creating new project "%s" and setting as active\n'%_headarise(proj))
             createProj(path,proj)
             lis = sorted(lis+[proj]) # appending regarding the order
         config.setActive(proj)
@@ -39,7 +41,7 @@ def prompProj(config,proj):
             res = promptAns(lis,remove=True)
             if res == -1:
                 sys.exit()
-            if click.confirm('\nProject "%s" is going to be deleted. Are you sure?'%lis[res]):
+            if click.confirm('\nProject "%s" is going to be deleted. Are you sure?'%_headarise(lis[res])):
                 delProj(path,lis[res])
                 print('Deleted.\n')
                 if len(lis)<1:
@@ -47,10 +49,10 @@ def prompProj(config,proj):
                     config.setActive('default')
                 elif lis[res] == act:
                     lis.remove(lis[res])
-                    print('Switching to %s\n'%lis[0])
+                    print('Switching to %s\n'%_headarise(lis[0]))
                     config.setActive(lis[0])
         else:
-            print('Switching to %s\n'%lis[res])
+            print('Switching to %s\n'%_headarise(lis[res]))
             config.setActive(lis[res])
 
 def createProj(path,proj):
@@ -85,7 +87,7 @@ def printTree(lis,path,active,numbers=True):
             left_bar = chr(9492)
         else: # all other rows
             left_bar = chr(9500)
-        print(left_padd+left_bar+chr(9472)*8+isAct+'%s'%key+' '*(lth-len(key)+1)+app_num)
+        print(left_padd+left_bar+chr(9472)*8+isAct+'%s'%_headarise(key)+' '*(lth-len(key)+1)+app_num)
     print()
 
 def promptAns(lis,remove=False):
@@ -114,3 +116,9 @@ def inputNumber(message):
     else:
        return userInput
        break
+
+def _file_titable(s):
+    return '_'.join(s.lower().split(' '))
+
+def _headarise(s):
+    return ' '.join(s.capitalize().split('_'))
