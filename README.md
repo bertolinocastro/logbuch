@@ -14,9 +14,11 @@ It also compiles in LaTeX for your [Lab-Book](https://github.com/waltercostamb/L
 
 Logbuch is a command line tool aimed to quickly take notes while you're closer to a terminal.
 
-Logbuch works handling _Markdown_ files. Each of these files is treated as a ___Subject___ and is where the notes are taken. Logbuch groups many ___Subjects___ inside their ___Projects___, as defined by the user.
+Logbuch works handling any markup input format files (such as _Markdown_, _HTML_, etc). Each of these files is treated as a ___Subject___ and is where the notes are taken. Logbuch groups many ___Subjects___ inside their ___Projects___, as defined by the user.
 
-Each ___Subject___ content is converted from _Markdown_ to _LaTeX_ syntax and then becomes a _subsection_ inside its ___Project___ _section_, with the necessary conversions between the markup languages. It can also handle figures from work/analysis.
+Each ___Subject___ content is converted from its input format to the output format defined by the user and then becomes a content as defined by the user inside its ___Project___.
+
+_<sup>def</sup>_: By default, Logbuch will convert from [`pandoc`'s _Markdown_](https://pandoc.org/MANUAL.html#pandocs-markdown) to _LaTeX_. However, it's possible to set `input` and `output` formats for `pandoc` convertion.
 
 ## Table of Contents
 
@@ -73,6 +75,7 @@ Logbuch depends on:
 2. [Pip3](https://packaging.python.org/guides/installing-using-linux-tools/#installing-pip-setuptools-wheel-with-linux-package-managers)
 3. [Click](https://click.palletsprojects.com/en/7.x/)
 4. [Whichcraft](https://github.com/pydanny/whichcraft)
+5. [pypandoc](https://github.com/bebraw/pypandoc)
 5. [Python3 venv](https://docs.python.org/3/library/venv.html)
 6. Any text editor callable from terminal <sup>1</sup>
 7. Any _LaTeX_ compiler callable from terminal <sup>2</sup>
