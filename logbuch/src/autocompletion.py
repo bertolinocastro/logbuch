@@ -26,7 +26,7 @@ def auto_comp_callback(ctx, args, incomplete):
         ret = []
     else:  # with no options passed or with -rm/--remove
         files = [x.replace(exte, '') for x in listFiles(root, actP)
-                 [actP] if exte in x and incomplete in x]
+                 [actP] if exte in x and x.startswith(incomplete)]
         ret = sorted(list(set(files)-set(args)))
 
     return ret
