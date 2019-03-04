@@ -4,6 +4,8 @@ import sys
 import datetime
 import re
 import time
+import getpass
+import difflib
 
 from .git import Git
 
@@ -16,12 +18,15 @@ class Topic(object):
 
     _conf = None
 
-    _header = ''
+    _title = ''
+    _author = ''
     _date = ''
     _text = ''
+    _full_content = ''
 
     _file_len = 0
     _file_lines = 0
+    _tripdash_delim_pos = 0
 
     def __init__(self,subject,conf,proj=None):
         if proj is None:
@@ -70,23 +75,22 @@ class Topic(object):
 
     def _get_subject(self):
         self._subject = self._file_titable(input('Empty "%s" folder. Please write a subject: '%self._base))
+        self._title = self._headarise(self._subject)
 
     def _get_contents(self):
         with open(self._path, 'a+') as f:
             f.seek(0)
+            self._get_full_content(f)
             if not self._isNew:
                 overWrite = False
                 if self._file_has_content(f):
-                    subj = f.readline().strip()
+                    titl = f.readline().strip()
+                    auth = f.readline().strip()
                     date = f.readline().strip()
-                    self._text = ''.join(f.readlines()[2:])
+                    f.seek(0)
+                    self._text = ''.join(f.readlines()[self._tripdash_delim_pos:])
 
-                    sb = re.fullmatch('Subject: (.+)',subj)
-                    dt = re.fullmatch('Date: (\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2})',date)
-                    if sb and sb.groups()[0] == self._headarise(self._subject) and dt:
-                        self._header = sb.groups()[0]
-                        self._date = dt.groups()[0]
-                    else:
+                    if not self._check_std_header(titl,auth,date):
                         print('"%s" does not match the standard header.'%self._headarise(self._subject))
                         overWrite = True
                 else:
@@ -94,18 +98,32 @@ class Topic(object):
                     overWrite = True
 
                 if overWrite:
-                    if not self._checkBoolInput('Topic content is going to be overwritten.\nAre you sure? [y/n]: '):
+                    if not self._checkBoolInput('Topic content is going to be prepended by the header.\nAre you sure? [y/n]: '):
                         sys.exit(0)
-                    print('Ovewriting...')
+                    print('Prepending...')
                     f.truncate(0)
 
                     self._get_header()
-                    self._get_date()
                     self._write_contents(f)
             else:
                 self._get_header()
-                self._get_date()
                 self._write_contents(f)
+
+    def _check_std_header(self,title,authors,date):
+        tt = re.fullmatch(r'%\s(.+)',title)
+        au = re.fullmatch(r'%\s(.+)',authors)
+        dt = re.fullmatch(r'%\s(\d{2}\.\d{2}\.\d{4}\s\d{2}:\d{2})',date)
+        try:
+            if tt: self._title = tt.groups()[0]
+            if au: self._author = au.groups()[0].split(';')
+            if dt: self._date = dt.groups()[0]
+            return tt and au and dt
+        except:
+            return False
+
+    def _get_full_content(self,f):
+        self._full_content = f.read()
+        f.seek(0)
 
     def _file_has_content(self,file):
         pos0 = file.tell()
@@ -114,24 +132,34 @@ class Topic(object):
 
         self._file_len = pos1
 
-        if pos1 < pos0 + 17:
+        if pos1 < pos0 + 30:
             return False
 
         file.seek(pos0)
         s = sum([1 for line in file])
-        file.seek(pos0)
-
         self._file_lines = s
 
-        if s < 2:
+        file.seek(pos0)
+        hasDash = False
+        for i,line in enumerate(file.readlines()):
+            if '---\n' == line:
+                hasDash = True
+                break
+            if i >= 5:
+                break
+        self._tripdash_delim_pos = i+1 if hasDash else 3
+        file.seek(pos0)
+
+        if s < 3:
             return False
         return True
 
     def _write_contents(self,f):
-        f.write('Subject: %s\n'%self._header)
-        f.write('Date: %s\n'%self._date)
-        f.write('\n# -------\n')
-        f.write(self._text)
+        f.write('%% %s\n'%self._title) # title
+        f.write('%% %s\n'%';'.join(self._author)) # authors
+        f.write('%% %s\n'%self._date) # date
+        f.write('\n---\n\n')
+        f.write(self._full_content)
 
     def _headarise(self,s):
         return ' '.join(s.capitalize().split('_'))
@@ -141,11 +169,9 @@ class Topic(object):
         return bool(pattern.match(s))
 
     def _get_header(self):
-        self._header = self._headarise(self._subject)
-
-    def _get_date(self):
-        now = datetime.datetime.now()
-        self._date = now.strftime("%d.%m.%Y %H:%M")
+        if not self._title:  self._title  = self._headarise(self._subject)
+        if not self._author: self._author = [getpass.getuser()]
+        if not self._date:   self._date   = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
 
     def path(self):
         return self._path
@@ -154,11 +180,20 @@ class Topic(object):
         newLen, newLine = self._get_file_len()
         changedC = newLen - self._file_len
         changedL = newLine - self._file_lines
-        print('Topic %s saved!\nContent changed: %+d char, %+d lines'%(self._headarise(self._subject),changedC,changedL))
+        print('Topic %s saved!\nContent changed: %+d char, %+d lines\n'%(self._headarise(self._subject),changedC,changedL))
+
+        new_cont = self._get_full_content_open()
+        for line in difflib.unified_diff(self._full_content.split('\n'),new_cont.split('\n'),'Original','Current',lineterm=''):
+            print(line)
 
         if (changedC or changedL) and self._conf.isAutoCommit():
             print('\nGit autocommiting...\n\n')
             Git.autoCommit(self._conf,self._subject+self._ext,changedC,changedL)
+
+    def _get_full_content_open(self):
+        with open(self._path,'r') as f:
+            return f.read()
+        return ''
 
     def _get_file_len(self):
         r = 0
@@ -177,10 +212,9 @@ class Topic(object):
         return '_'.join(s.lower().split(' ')).replace(self._ext,'')
 
     def getFileContents(self):
-        with open(self._path, 'r') as f:
-            content = f.readlines()[4:] # skipping header and dotted line
-            self._text = ''.join(content)
-        return {'header':   self._headarise(self._subject),
+        return {'subj':     self._headarise(self._subject),
+                'title':    self._title,
+                'author':   self._author,
                 'date':     self._date,
                 'text':     self._text
         }
