@@ -28,6 +28,7 @@ setup(
     install_requires=[
         'Click',
         'whichcraft',
+        'pypandoc',
     ],
     entry_points='''
         [console_scripts]
