@@ -38,6 +38,7 @@ class Config(object):
     _default_PDF_DIR = '~/.logbuch/tex_tmp'
 
     _G_AUTO_COMMIT = None
+    _PANDOC_EXTRA_ARGS = None
 
     def __init__(self,make,list,remove,conf,proj,git,subject):
         self._get_cmd_args(make,list,remove,conf,proj,git,subject)
@@ -47,7 +48,7 @@ class Config(object):
         self._confOpen()
 
     def _get_cmd_args(self,make,list,remove,conf,proj,git,subject):
-        self._buch = (subject!='') and (make^list^remove^proj)
+        self._buch = (subject!='') and (make^list^remove^proj^git)
         self._list = list
         self._remv = remove
         self._make = make
@@ -71,7 +72,7 @@ class Config(object):
             print('There is no configuration file in the system. Creating: %s'%self._base+'/'+self._confF)
             content = self._content%(
                 os.path.expanduser('~/logbuch_projects'),
-                'default', 'vi','.md',self._PDF_CMD_FULL_def,'YES')
+                'default', 'vi','.md',';'.join([self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]),'YES')
             with open(self._base+'/'+self._confF,'w') as f:
                 f.write(content)
         # ---
@@ -143,6 +144,14 @@ class Config(object):
             print('ERROR: Could not properly read the G_AUTO_COMMIT in conf file. Using default flag "True"')
             self._G_AUTO_COMMIT = True
 
+        # PANDOC_EXTRA_ARGS
+        try:
+            if 'PANDOC_EXTRA_ARGS' in content:
+                tmp = re.findall('PANDOC_EXTRA_ARGS\s=\s*(.+)',content)
+                if tmp: self._PANDOC_EXTRA_ARGS = tmp[0].split(';')
+        except:
+            print('ERROR: Could not properly read the PANDOC_EXTRA_ARGS in conf file. Using none.')
+
     def projsDir(self):
         return self._PROJS_FOLD
 
@@ -184,6 +193,9 @@ class Config(object):
 
     def isAutoCommit(self):
         return self._G_AUTO_COMMIT
+
+    def getPandocExArgs(self):
+        return self._PANDOC_EXTRA_ARGS
 
 class NoLogFile(Exception):
     pass
