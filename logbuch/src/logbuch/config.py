@@ -152,6 +152,9 @@ class Config(object):
         except:
             print('ERROR: Could not properly read the PANDOC_EXTRA_ARGS in conf file. Using none.')
 
+    def confDir(self):
+        return self._base
+
     def projsDir(self):
         return self._PROJS_FOLD
 
