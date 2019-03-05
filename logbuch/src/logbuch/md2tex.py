@@ -8,6 +8,7 @@ import click
 import getpass
 import pypandoc
 from .topic import Topic
+from .tplates import Tplates
 
 class Md2Tex(object):
     """A class to hold all static methods to convert a markdown to a latex file content"""
@@ -54,9 +55,14 @@ class Md2Tex(object):
 
     _pandoc_args = []
 
+    _tplates = None
+
+    _pandoc_output = ''
+
     def __init__(self,config,proj):
         self._config = config
         self._proj = proj
+        self._tplates = Tplates(config)
 
         path = config.projsDir() # projects root
 
@@ -72,6 +78,7 @@ class Md2Tex(object):
         self._get_title(config)
         self._get_author(config)
         self._get_contents(dic,config)
+        self._writeContents()
 
     def _get_header_file(self,proj):
         self._clean_std_header()
@@ -116,52 +123,62 @@ class Md2Tex(object):
         self._tex_author = self._tex_author%' \and '.join(self._tex_authors_h) if self._tex_authors_h else self._tex_author%getpass.getuser()
 
     def _get_contents(self,dic,config):
-        self._add_content([self._tex_header,self._tex_title,self._tex_author,self._tex_begin,self._tex_mkttle,self._tex_tbcntents])
+        logb_tplt = self._tplates.logb_template()
+        meta_yaml = self._tplates.meta_yaml()
+        proj_tplt = self._tplates.proj_template()
+        subj_tplt = self._tplates.subj_template()
 
         for proj in sorted(dic):
-            self._get_header_file(proj)
-
-            tmp_part_child  = (self._tex_part_sub%self._tex_subtitle_h) if self._tex_subtitle_h else ''
-            tmp_part_child += (self._tex_part_aut%r' \and '.join(self._tex_authors_h)) if self._tex_authors_h else ''
-            tmp_part_child += (self._tex_part_dat%self._tex_date_h) if self._tex_date_h else ''
-
-            self._add_content([self._tex_part%(self._headarise(proj),
-                tmp_part_child,
-                self._headarise(proj))])
+            proj_yaml = self._tplates.proj_yaml(proj)
+            self._add_content([
+                self._convert_md(None, proj_tplt,proj_yaml)
+            ])
 
             if len(dic[proj]) < 1:
                 print('Warning: Project %s is Empty!'%proj)
-                self._add_content([
-                    self._convert_md(None)
-                ])
+                continue
 
             topC = [Topic(topic,config,proj=proj).getFileContents() for topic in dic[proj]]
-            date = [_tstamp(cont['date']) for cont in topC]
+            date = [_tstamp(cont['header']['date']) for cont in topC]
             ordr = _argsort(date)
 
             for itopic in ordr:
                 cont = topC[itopic]
+                top_yaml = self._append_body_yaml(cont['header']['path'],cont['text'])
                 self._add_content([
-                    self._tex_chapter%(cont['subj'],cont['date'],cont['subj']),
-                    self._convert_md(cont['text'])
+                    self._convert_md(None,subj_tplt,top_yaml,text=True)
                 ])
 
-        self._add_content([self._tex_end])
+        final_yaml = self._append_body_yaml(meta_yaml,self._tex_text)
+        self._pandoc_output = ext = self._convert_md(None,logb_tplt,final_yaml,text=True)
 
-    def _convert_md(self,s):
-        if s:
-            return pypandoc.convert_text(s, 'latex', format='md', extra_args=self._pandoc_args)
+    def _convert_md(self,subj,template,yaml,outfile=None,text=False):
+        if text:
+            convert = pypandoc.convert_text
         else:
-            return r'\textit{Nothing here!}'+'\n'
+            convert = pypandoc.convert_file
+        if subj:
+            return convert(subj, 'latex', format='md', outputfile=outfile,
+                extra_args=['--template='+template])
+        else:
+            return convert(yaml, 'latex', format='md', outputfile=outfile,
+                extra_args=['--template='+template])
 
-    def writeContents(self):
+    def _writeContents(self):
         path = self._config.projsDir()
         self._proj = self._proj if self._proj else 'all'
         self._texFile = path+'/'+self._proj+'.tex'
 
         if not os.path.exists(self._texFile) or click.confirm('Output TeX file %s already exists. Would you like to overwrite?'%self._texFile):
-            with open(self._texFile,'w+') as f:
-                f.write(self._tex_text)
+            with open(self._texFile,'w') as f:
+                f.write(self._pandoc_output)
+
+    def _append_body_yaml(self,path,text):
+        bdy_tplt = '\n'.join([r'---',r'body: |',r'{cnt}',r'...'])
+        with open(path,'r') as f:
+            cnt = f.read()
+            return cnt+bdy_tplt.format(cnt='\n    '.join(['']+text.splitlines()+['']))
+        return ''
 
     def editContents(self):
         if click.confirm('Would you like to edit the tex file?'):
@@ -174,6 +191,8 @@ class Md2Tex(object):
         return ' '.join(s.capitalize().split('_'))
 
     def compile(self):
+        # print(self._tex_text)
+
         oldCd = os.getcwd()
         os.chdir(self._config.projsDir())
 
@@ -196,7 +215,7 @@ class Md2Tex(object):
         os.chdir(oldCd)
 
         projs = self._projects
-        print('Project%s %s compiled as %s.tex'%('s' if len(projs)>1 else '',
+        print('Project%s %s compiled as %s.pdf'%('s' if len(projs)>1 else '',
                        ','.join(projs), self._proj))
 
 # -----

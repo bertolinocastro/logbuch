@@ -9,6 +9,5 @@ def make(conf,proj):
     # then compile it
 
     texFile = Md2Tex(conf,proj)
-    texFile.writeContents()
     # texFile.editContents()
     texFile.compile()
