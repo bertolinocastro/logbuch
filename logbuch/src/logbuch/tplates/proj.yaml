@@ -1,0 +1,6 @@
+---
+    proj-titl: %(title)s
+    proj-subt: %(subtitle)s
+    proj-auth: %(authors)s
+    proj-date: %(date)s
+...

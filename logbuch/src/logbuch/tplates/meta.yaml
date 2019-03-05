@@ -1,0 +1,33 @@
+---
+    documentclass: 'report'
+    fontsize: 12pt
+    papersize: a4
+    # fontfamily: helvet
+    keywords: [bookmarks]
+    geometry:
+        - left=3.5cm
+        - right=2.5cm
+        - top=2.5cm
+        - bottom=2.5cm
+    graphics: true
+    # look at numbersections and secnumdepth variables
+    numbersections: true
+    secnumdepth: 2
+
+    header-includes:
+        - '\renewcommand{\familydefault}{\sfdefault}'
+        - '\renewcommand{\thesection}{\arabic{section}}'
+        # - '\usepackage{helvet}'
+        # - '\renewcommand{\familydefault}{\sfdefault}'
+
+    title: %(title)s
+    subtitle: %(subtitle)s
+    author: %(author)s
+    date: %(date)s
+    # institute: ETHZ
+
+    toc: true
+    # lot: true
+    # lof: true
+    # biblatex: true
+...
