@@ -13,33 +13,6 @@ from .tplates import Tplates
 class Md2Tex(object):
     """A class to hold all static methods to convert a markdown to a latex file content"""
 
-    _tex_header = '\n'.join([
-        r'\documentclass[a4paper,12pt]{report}',
-        r'\usepackage[utf8x]{inputenc}',
-        r'\usepackage[left=3.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}',
-        r'\usepackage[bookmarks]{hyperref}',
-        r'\usepackage{helvet}',
-        r'\renewcommand{\familydefault}{\sfdefault}',
-        r'\renewcommand{\thesection}{\arabic{section}} % This removes the "0.x" section indexing'
-        ])
-
-    _tex_title = r'\title{\Huge{%s}%s}'
-    _tex_author = r'\author{%s}'
-    _tex_date = r'\date{%s}'
-
-    _tex_begin = r'\begin{document}'
-    _tex_end   = r'\end{document}'
-
-    _tex_mkttle = '\n'+r'\maketitle'
-    _tex_tbcntents = '\n'+r'\tableofcontents' + '\n'
-
-    _tex_part = '\n'.join([r'\part*{%s%s}',r'\addcontentsline{toc}{part}{%s}']) + '\n'
-    _tex_part_sub = r'\\ \bigskip\bigskip\bigskip\bigskip\bigskip\normalfont\Large{%s}'
-    _tex_part_aut = r'\\ \bigskip\bigskip\bigskip\bigskip\bigskip\normalfont\large{%s}'
-    _tex_part_dat = r'\\ \bigskip\normalfont\large{%s}'
-    _tex_chapter = '\n'.join([r'\chapter*{\LARGE{%s}\\ \normalfont\large{\textit{%s}}}',
-        r'\addcontentsline{toc}{chapter}{%s}',r'\setcounter{section}{0}']) + '\n'
-
     _tex_text = ''
 
     _config = None
@@ -47,11 +20,6 @@ class Md2Tex(object):
     _texFile = None
 
     _projects = None
-
-    _pandoc_header = ''
-    _tex_subtitle_h = ''
-    _tex_authors_h = []
-    _tex_date_h = ''
 
     _pandoc_args = []
 
@@ -73,54 +41,8 @@ class Md2Tex(object):
         dic = listDir(path,proj,config.getExt())
         self._projects = list(dic)
 
-        self._get_header_file(None)
-
-        self._get_title(config)
-        self._get_author(config)
         self._get_contents(dic,config)
         self._writeContents()
-
-    def _get_header_file(self,proj):
-        self._clean_std_header()
-        if proj:
-            path = self._config.projsDir()+'/'+proj+'/.header.md'
-        else:
-            path = self._config.projsDir()+'/.header.md'
-        if os.path.exists(path):
-            with open(path,'r') as f:
-                self._pandoc_header = f.read()
-                self._check_std_header(path)
-
-    def _check_std_header(self,path):
-
-        lines = self._pandoc_header.split('\n')
-        if len(lines)>2:
-            tt = re.fullmatch(r'%\s(.+)',lines[0])
-            au = re.fullmatch(r'%\s(.+)',lines[1])
-            dt = re.fullmatch(r'%\s(.+)',lines[2])
-            try:
-                if tt: self._tex_subtitle_h= tt.groups()[0]
-                if au: self._tex_authors_h = au.groups()[0].split(';')
-                if dt: self._tex_date_h = dt.groups()[0]
-                return tt and au and dt
-            except:
-                return False
-        else:
-            print('ERROR: Could not read Pandoc hidden header at "%s".'%path)
-
-    def _clean_std_header(self):
-        self._tex_subtitle_h= ''
-        self._tex_authors_h = []
-        self._tex_date_h = ''
-
-    def _get_title(self,config):
-        self._tex_title = self._tex_title%('Logbuch',
-            r'\\ \bigskip\bigskip\large{%s}'%self._tex_subtitle_h if self._tex_subtitle_h else r'')
-        if self._tex_date_h:
-            self._tex_title = self._tex_date%self._tex_date_h + self._tex_title
-
-    def _get_author(self,config):
-        self._tex_author = self._tex_author%' \and '.join(self._tex_authors_h) if self._tex_authors_h else self._tex_author%getpass.getuser()
 
     def _get_contents(self,dic,config):
         logb_tplt = self._tplates.logb_template()
@@ -242,9 +164,6 @@ def listDir(path,proj,ext):
                 dic[proj].append(topic)
 
     return dic
-
-def _ignoreExt(s):
-    return s != '.tex' and s != '.swp'
 
 def _argsort(seq):
     return sorted(range(len(seq)), key=seq.__getitem__)
