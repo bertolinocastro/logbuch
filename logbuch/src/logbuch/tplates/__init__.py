@@ -36,9 +36,9 @@ class Tplates(object):
         else:
             cnt = self._read_file(pathdef)%(SafeDict(
                 title='Logbuch',
-                subtitle='Research/Academy life notes',
+                subtitle='Research/Academia life notes',
                 author='['+getpass.getuser()+']',
-                date=datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
+                date=r'\today'
             ))
             self._write_file(path,cnt)
             return path
