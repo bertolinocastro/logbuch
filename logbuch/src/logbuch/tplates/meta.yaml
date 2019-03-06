@@ -1,24 +1,29 @@
 ---
-    documentclass: 'report'
+    documentclass: 'scrreprt'
     fontsize: 12pt
     papersize: a4
     # fontfamily: helvet
-    keywords: [bookmarks]
-    geometry:
-        - left=3.5cm
-        - right=2.5cm
-        - top=2.5cm
-        - bottom=2.5cm
+    # keywords: [bookmarks]
+    # geometry:
+    #     - left=3.5cm
+    #     - right=2.5cm
+    #     - top=2.5cm
+    #     - bottom=2.5cm
     graphics: true
     # look at numbersections and secnumdepth variables
     numbersections: true
     secnumdepth: 2
 
     header-includes:
-        - '\renewcommand{\familydefault}{\sfdefault}'
+        # - '\renewcommand{\familydefault}{\sfdefault}'
         - '\renewcommand{\thesection}{\arabic{section}}'
         # - '\usepackage{helvet}'
         # - '\renewcommand{\familydefault}{\sfdefault}'
+        # - '\usepackage[sfdefault]{noto}'
+        # - '\usepackage[T1]{fontenc}'
+        # - '\usepackage{noto}'
+        - '\usepackage{arev}'
+        - '\usepackage[T1]{fontenc}'
 
     title: %(title)s
     subtitle: %(subtitle)s
@@ -30,4 +35,7 @@
     # lot: true
     # lof: true
     # biblatex: true
+
+    colorlinks: true
+    # linkcolor:
 ...
