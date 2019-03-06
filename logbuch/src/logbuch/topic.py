@@ -92,7 +92,7 @@ class Topic(object):
         newLen, newLine = self._get_file_len()
         changedC = newLen - self._file_len
         changedL = newLine - self._file_lines
-        print('Topic %s saved!\nContent changed: %+d char, %+d lines\n'%(self._headarise(self._subject),changedC,changedL))
+        print('\nSubject "%s" saved!\nContent changed: %+d char, %+d lines\n'%(self._headarise(self._subject),changedC,changedL))
 
         new_cont = self._get_full_content_open()
         for line in difflib.unified_diff(self._full_content.split('\n'),new_cont.split('\n'),'Original','Current',lineterm=''):
@@ -182,7 +182,7 @@ class TopicHeader(object):
                     overWrite = True
 
                 if overWrite:
-                    if not self._checkBoolInput('Topic header content is going to be prepended by the new header.\nAre you sure? [y/n]: '):
+                    if not self._checkBoolInput('Subject header content is going to be prepended by the new header.\nAre you sure? [y/n]: '):
                         sys.exit(0)
                     print('Prepending...')
                     f.truncate(0)
@@ -257,7 +257,7 @@ class TopicHeader(object):
         changedL = newLine - self._file_lines
 
         if (changedC or changedL):
-            print('Topic header %s saved!\nContent changed: %+d char, %+d lines\n'%(self._headarise(self._subject),changedC,changedL))
+            print('\nSubject header %s saved!\nContent changed: %+d char, %+d lines\n'%(self._headarise(self._subject),changedC,changedL))
 
         new_cont = self._get_full_content_open()
         for line in difflib.unified_diff(self._full_content.split('\n'),new_cont.split('\n'),'Original','Current',lineterm=''):
