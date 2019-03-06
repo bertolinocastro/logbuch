@@ -45,6 +45,7 @@ class Md2Tex(object):
         self._writeContents()
 
     def _get_contents(self,dic,config):
+        frm, to = config.getFromToFormats()
         logb_tplt = self._tplates.logb_template()
         meta_yaml = self._tplates.meta_yaml()
         proj_tplt = self._tplates.proj_template()
@@ -53,7 +54,7 @@ class Md2Tex(object):
         for proj in sorted(dic):
             proj_yaml = self._tplates.proj_yaml(proj)
             self._add_content([
-                self._convert_md(None, proj_tplt,proj_yaml)
+                self._convert_md(proj_tplt,proj_yaml,frm=frm,to=to)
             ])
 
             if len(dic[proj]) < 1:
@@ -68,23 +69,19 @@ class Md2Tex(object):
                 cont = topC[itopic]
                 top_yaml = self._append_body_yaml(cont['header']['path'],cont['text'])
                 self._add_content([
-                    self._convert_md(None,subj_tplt,top_yaml,text=True)
+                    self._convert_md(subj_tplt,top_yaml,text=True,frm=frm,to=to)
                 ])
 
         final_yaml = self._append_body_yaml(meta_yaml,self._tex_text)
-        self._pandoc_output = ext = self._convert_md(None,logb_tplt,final_yaml,text=True)
+        self._pandoc_output = ext = self._convert_md(logb_tplt,final_yaml,text=True,frm=frm,to=to)
 
-    def _convert_md(self,subj,template,yaml,outfile=None,text=False):
+    def _convert_md(self,template,yaml,outfile=None,text=False,frm='md',to='latex'):
         if text:
             convert = pypandoc.convert_text
         else:
             convert = pypandoc.convert_file
-        if subj:
-            return convert(subj, 'latex', format='md', outputfile=outfile,
-                extra_args=['--template='+template])
-        else:
-            return convert(yaml, 'latex', format='md', outputfile=outfile,
-                extra_args=['--template='+template])
+        return convert(yaml, to, format=frm, outputfile=outfile,
+            extra_args=['--template='+template])
 
     def _writeContents(self):
         path = self._config.projsDir()
@@ -123,7 +120,7 @@ class Md2Tex(object):
         for cmdi in cmds:
             cmd = list(cmdi)[0]
             args = cmdi[cmd]
-            args = [x.replace('%log_file%',self._texFile) for x in args]
+            args = [x.replace('logbuch_file',self._texFile) for x in args]
 
             try:
                 ret = subprocess.run([cmd]+args,capture_output=True,check=True)
