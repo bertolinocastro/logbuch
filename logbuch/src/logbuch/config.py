@@ -3,8 +3,7 @@ import subprocess
 import os
 import re
 from whichcraft import which
-
-# TODO: URGENT!!!!!!!!! Convert it to configparser class from python
+from configparser import ConfigParser
 
 class Config(object):
     # args passed
@@ -17,14 +16,14 @@ class Config(object):
     _gitt = None
     _topc = None
 
+    _confF_absent = False
+
     _base = '~/.logbuch'
     _confF = 'conf.cfg'
-    _content =  "PROJECTS_FOLDER=%s\n"+\
-                "ACTIVE_PROJECT=%s\n"+\
-                "EDITOR=%s\n"+\
-                "EXTENSION=%s\n"+\
-                "PDF_CMD=%s\n"+\
-                "G_AUTO_COMMIT=%s\n"
+    _path = ''
+
+    _cfg_default = None
+    _cfg_dict = None
 
     _PROJS_FOLD = ''
     _ACT_PROJ = ''
@@ -33,19 +32,36 @@ class Config(object):
 
     _PDF_CMD = None
     _PDF_CMD_def = 'latexmk'
-    _PDF_CMD_FULL_def  = _PDF_CMD_def+' -pdf -silent %log_file%'
+    _PDF_CMD_FULL_def  = _PDF_CMD_def+' -pdf -silent logbuch_file'
     _PDF_CMD_CLEAR_def = _PDF_CMD_def+' -c -silent'
     _default_PDF_DIR = '~/.logbuch/tex_tmp'
 
     _G_AUTO_COMMIT = None
     _PANDOC_EXTRA_ARGS = None
 
+    _cfg_parser = None
+
     def __init__(self,make,list,remove,conf,proj,git,subject):
         self._get_cmd_args(make,list,remove,conf,proj,git,subject)
 
         self._base = os.path.expanduser(self._base)
+        self._path = self._base+'/'+self._confF
         self._default_PDF_DIR = os.path.expanduser(self._default_PDF_DIR)
+        self._set_default_config()
         self._confOpen()
+
+    def _set_default_config(self):
+        self._cfg_default = dict(
+            projects_folder=os.path.expanduser('~/logbuch_projects'),
+            active_project='default',
+            editor=os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi',
+            extension='.md',
+            pdf_cmd=','.join([self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]),
+            g_auto_commit=True,
+            pandoc_from_format='md',
+            pandoc_to_format='latex',
+            pandoc_extra_args=''
+        )
 
     def _get_cmd_args(self,make,list,remove,conf,proj,git,subject):
         self._buch = (subject!='') and (make^list^remove^proj^git)
@@ -56,130 +72,91 @@ class Config(object):
         self._prmp = proj
         self._gitt = git
 
+    def _fake_section_header(self):
+        try:
+            with open(self._path, 'r') as f:
+                cnt = f.read()
+                return u'[USER]\n'+cnt if not '[USER]' in cnt else cnt
+        except:
+            self._confF_absent = True
+            return u'[USER]\n'
+
+    def _add_logbuch_section(self):
+        config = self._cfg_parser
+        dat = config.items('USER',raw=True)
+        if not config.has_section('USER'):
+            config.add_section('USER')
+        for item in dat:
+            config.set('USER',item[0],item[1])
+
     def _confOpen(self):
-        if not os.path.exists(self._base):
-            os.mkdir(self._base)
+        config = ConfigParser(self._cfg_default)
+        config.read_string(self._fake_section_header())
+        dat = dict(config.items('USER',raw=True))
+        self._cfg_parser = config
+        self._cfg_dict = dat
 
-        content = ''
-        if os.path.exists(self._base+'/'+self._confF):
-            with open(self._base+'/'+self._confF, 'a+') as f:
-                f.seek(0)
-                content = f.read()
-        # ----
+        self._add_logbuch_section()
 
-        # running default configuration
-        if not content:
-            print('There is no configuration file in the system. Creating: %s'%self._base+'/'+self._confF)
-            content = self._content%(
-                os.path.expanduser('~/logbuch_projects'),
-                'default', 'vi','.md',';'.join([self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]),'YES')
-            with open(self._base+'/'+self._confF,'w') as f:
-                f.write(content)
-        # ---
+        self._PDF_CMD = self._check_pdf_tool(dat['pdf_cmd'])
+        self._PANDOC_EXTRA_ARGS = self._check_pandoc_ex_args(dat['pandoc_extra_args'])
 
-        # PROJECTS_FOLDER
+        if self._confF_absent:
+            self._confSave()
+
+    def _check_pdf_tool(self,tool):
         try:
-            self._PROJS_FOLD = re.findall('PROJECTS_FOLDER\s*=\s*(.+)', content)[0]
-        except:
-            print('ERROR: Could not properly read PROJS_FOLD in configuration file. Backing to default.')
-            self._PROJS_FOLD = os.path.expanduser('~/logbuch_projects')
-
-        # ACTIVE_PROJECT
-        try:
-            self._ACT_PROJ = re.findall('ACTIVE_PROJECT\s*=\s*(.+)', content)[0]
-        except:
-            print('ERROR: Could not properly read ACT_PROJ in configuration file. Backing to default.')
-            self._ACT_PROJ = 'default'
-
-        # EXTENSION
-        try:
-            self._EXT = re.findall('EXTENSION\s*=\s*(.+)', content)[0]
-        except:
-            print('ERROR: Could not properly read EXTENSION in configuration file. Backing to default.')
-            self._EXT = '.md'
-
-        # EDITOR
-        try:
-            self._EDITOR = re.findall('EDITOR\s*=\s*(.+)', content)[0]
-        except:
-            print('ERROR: Could not properly read the EDITOR in conf file. Using system\'s default or trying "vi" if none.')
-            self._EDITOR = os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi'
-
-        # PDF_CMD
-        try:
-            tmp = re.findall('PDF_CMD\s*=\s*(.+)',content)
-            if len(tmp)<1:
-                raise NoLaTeXTool
-            self._PDF_CMD = [x.strip() for x in tmp[0].split(';')]
-            if not any('%log_file%' in x for x in self._PDF_CMD):
-                print('PDF_CMD parameter in config file has no %log_file% as argument for any command!')
-                if self._make:
-                    raise NoLogFile
-            else:
-                for cmd in self._PDF_CMD:
-                    name = cmd.split(' ')[0]
-                    if self._make and not self._hasTool(name):
-                        print('Your system does not have "%s" installed. Try default commands for safety reasons.'%(name))
-                        raise NoLaTeXTool
-        except NoLogFile:
-            sys.exit()
-        except NoLaTeXTool:
-            if not self._hasTool(self._PDF_CMD_def):
-                print('Could not find %s as LaTeX compiler on your system. Please, provide an existing one in config file.'%self._PDF_CMD_def)
-                if self._make:
-                    sys.exit()
-            else:
-                self._PDF_CMD = [self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]
+            tmp = tool.split(',')
+            if not any('logbuch_file' in x for x in tmp):
+                raise Exception('PDF_CMD parameter in config file does not have logbuch_file as argument for any command!')
+            for cmd in tmp:
+                tool = cmd.split(' ')[0]
+                if not self._hasTool(tool):
+                    raise Exception('Your system does not have "%s" installed.'%tool)
+            return tmp
         except Exception as e:
-            print('ERROR: Unexpected error ocurred while triying to read PDF_CMD parameter in config file...\n%s'%repr(e))
+            print(repr(e))
+            if self._make: sys.exit()
+            return ['']
 
-        # G_AUTO_COMMIT
-        try:
-            if 'G_AUTO_COMMIT' in content:
-                tmp = re.findall('G_AUTO_COMMIT\s*=\s*(.+)', content)[0]
-                self._G_AUTO_COMMIT = True if tmp == 'True' else False
-            else:
-                self._G_AUTO_COMMIT = True
-        except:
-            print('ERROR: Could not properly read the G_AUTO_COMMIT in conf file. Using default flag "True"')
-            self._G_AUTO_COMMIT = True
-
-        # PANDOC_EXTRA_ARGS
-        try:
-            if 'PANDOC_EXTRA_ARGS' in content:
-                tmp = re.findall('PANDOC_EXTRA_ARGS\s=\s*(.+)',content)
-                if tmp: self._PANDOC_EXTRA_ARGS = tmp[0].split(';')
-        except:
-            print('ERROR: Could not properly read the PANDOC_EXTRA_ARGS in conf file. Using none.')
+    def _check_pandoc_ex_args(self,s):
+        return s.split(',')
 
     def confDir(self):
         return self._base
 
     def projsDir(self):
-        return self._PROJS_FOLD
+        return self._cfg_parser.get('USER','projects_folder')
 
     def actProj(self):
-        return self._ACT_PROJ
+        return self._cfg_parser.get('USER','active_project')
 
     def editor(self):
-        return self._EDITOR
+        return self._cfg_parser.get('USER','editor')
 
     def edit(self):
         # running the text editor
-        subprocess.run([self.editor(), self._base+'/'+self._confF])
+        subprocess.run([self.editor(), self._path])
 
     def getExt(self):
-        return self._EXT
+        return self._cfg_parser.get('USER','extension')
+
+    def getFromToFormats(self):
+        return self._cfg_parser.get('USER','pandoc_from_format'),\
+            self._cfg_parser.get('USER','pandoc_to_format')
 
     def setActive(self,proj):
-        self._ACT_PROJ = proj
+        self._cfg_parser.set('USER','active_project',proj)
         self._confSave()
 
     def _confSave(self):
-        content = self._content%(self._PROJS_FOLD,self._ACT_PROJ,self._EDITOR,self._EXT,
-            ';'.join(self._PDF_CMD),'True' if self._G_AUTO_COMMIT else 'False')
-        with open(self._base+'/'+self._confF,'w') as f:
-            f.write(content)
+        try:
+            with open(self._path,'w') as f:
+                self._cfg_parser.write(f)
+        except:
+            print('Could not save configuration to "%s".\nWriting it out to stdout and exiting.'%self._path)
+            self._cfg_parser.write(sys.stdout)
+            sys.exit()
 
     def getDefTexDir(self):
         return os.path.expanduser(self._default_PDF_DIR)
@@ -195,13 +172,7 @@ class Config(object):
         return cmd
 
     def isAutoCommit(self):
-        return self._G_AUTO_COMMIT
+        return self._cfg_parser.getboolean('USER','g_auto_commit')
 
     def getPandocExArgs(self):
         return self._PANDOC_EXTRA_ARGS
-
-class NoLogFile(Exception):
-    pass
-
-class NoLaTeXTool(Exception):
-    pass
