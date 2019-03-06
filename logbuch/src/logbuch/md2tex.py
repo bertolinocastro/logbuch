@@ -93,10 +93,9 @@ class Md2Tex(object):
                 f.write(self._pandoc_output)
 
     def _append_body_yaml(self,path,text):
-        bdy_tplt = '\n'.join([r'---',r'body: |',r'{cnt}',r'...'])
         with open(path,'r') as f:
             cnt = f.read()
-            return cnt+bdy_tplt.format(cnt='\n    '.join(['']+text.splitlines()+['']))
+            return cnt+'\n'+text
         return ''
 
     def editContents(self):
