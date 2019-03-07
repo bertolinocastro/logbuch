@@ -58,7 +58,7 @@ class Config(object):
             extension='.md',
             pdf_cmd=','.join([self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]),
             g_auto_commit=True,
-            pandoc_from_format='md',
+            pandoc_from_format='markdown',
             pandoc_to_format='latex',
             pandoc_extra_args=''
         )
