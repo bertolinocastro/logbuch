@@ -23,7 +23,7 @@ class Tplates(object):
     # def logb_template(self,path):
     #     return self._try_file_after_default(path,self._my_path+'/logbuch.template.tex')
     def logb_template(self):
-        return self._try_path(self._projs_dir+'/.logbuch.template',
+        return self._try_path(self._projs_dir+'/.logbuch.template.tex',
             self._my_path+'/logbuch.template.tex')
 
     # def meta_yaml(self,path):
@@ -46,7 +46,7 @@ class Tplates(object):
     # def proj_template(self,path):
     #     return self._try_file_after_default(path,self._my_path+'/proj.template.tex')
     def proj_template(self):
-        return self._try_path(self._projs_dir+'/.proj.template',
+        return self._try_path(self._projs_dir+'/.proj.template.tex',
             self._my_path+'/proj.template.tex')
 
     # def proj_yaml(self,path):
@@ -69,7 +69,7 @@ class Tplates(object):
     # def subj_template(self,path):
     #     return self._try_file_after_default(path,self._my_path+'/subj.template.tex')
     def subj_template(self):
-        return self._try_path(self._projs_dir+'/.subj.template',
+        return self._try_path(self._projs_dir+'/.subj.template.tex',
             self._my_path+'/subj.template.tex')
 
     def _try_file_after_default(self,path,pathdef):
