@@ -69,19 +69,19 @@ class Md2Tex(object):
                 cont = topC[itopic]
                 top_yaml = self._append_body_yaml(cont['header']['path'],cont['text'])
                 self._add_content([
-                    self._convert_md(subj_tplt,top_yaml,text=True,frm=frm,to=to)
+                    self._convert_md(subj_tplt,top_yaml,text=True,frm=frm,to=to,args=['--biblatex'])
                 ])
 
         final_yaml = self._append_body_yaml(meta_yaml,self._tex_text)
         self._pandoc_output = ext = self._convert_md(logb_tplt,final_yaml,text=True,frm=frm,to=to)
 
-    def _convert_md(self,template,yaml,outfile=None,text=False,frm='md',to='latex'):
+    def _convert_md(self,template,yaml,outfile=None,text=False,frm='md',to='latex',args=[]):
         if text:
             convert = pypandoc.convert_text
         else:
             convert = pypandoc.convert_file
         return convert(yaml, to, format=frm, outputfile=outfile,
-            extra_args=['--template='+template])
+            extra_args=['--template='+template]+args)
 
     def _writeContents(self):
         path = self._config.projsDir()
