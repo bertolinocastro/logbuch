@@ -69,7 +69,7 @@ class Md2Tex(object):
                 cont = topC[itopic]
                 top_yaml = self._append_body_yaml(cont['header']['path'],cont['text'])
                 self._add_content([
-                    self._convert_md(subj_tplt,top_yaml,text=True,frm=frm,to=to,args=['--biblatex','--listings'])
+                    self._convert_md(subj_tplt,top_yaml,text=True,frm=frm,to=to,args=self._pandoc_args)
                 ])
 
         final_yaml = self._append_body_yaml(meta_yaml,self._tex_text)

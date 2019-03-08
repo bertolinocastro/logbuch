@@ -60,7 +60,7 @@ class Config(object):
             g_auto_commit=True,
             pandoc_from_format='markdown',
             pandoc_to_format='latex',
-            pandoc_extra_args=''
+            pandoc_extra_args=','.join(['--biblatex','--listings'])
         )
 
     def _get_cmd_args(self,make,list,remove,conf,proj,git,subject):
