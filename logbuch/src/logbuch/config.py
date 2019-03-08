@@ -64,7 +64,7 @@ class Config(object):
         )
 
     def _get_cmd_args(self,make,list,remove,conf,proj,git,subject):
-        self._buch = (subject!='') and (make^list^remove^proj^git)
+        self._buch = not (make^list^remove^proj^git)
         self._list = list
         self._remv = remove
         self._make = make
@@ -98,11 +98,18 @@ class Config(object):
 
         self._add_logbuch_section()
 
+        self._check_actv_proj(dat['active_project'])
         self._PDF_CMD = self._check_pdf_tool(dat['pdf_cmd'])
         self._PANDOC_EXTRA_ARGS = self._check_pandoc_ex_args(dat['pandoc_extra_args'])
 
+
         if self._confF_absent:
             self._confSave()
+
+    def _check_actv_proj(self,s):
+        if (self._list or self._make or self._buch or self._remv) and (not s.strip() or len(s.strip()) < 1):
+            print('Can\'t start program with missing active project parameter in config file.\nPlease, set one through the "-p" option.')
+            sys.exit()
 
     def _check_pdf_tool(self,tool):
         try:
