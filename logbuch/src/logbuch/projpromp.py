@@ -15,6 +15,9 @@ def prompProj(config,proj):
     lis = sorted(listDir(path,ignore))
 
     if proj:
+        if proj in ignore:
+            print('Stop! Can\'t create as Project an ignored directory.')
+            sys.exit()
         if proj == 'all':
             print('Project can\'t be "all". This is a reserved keyword.')
             sys.exit()
