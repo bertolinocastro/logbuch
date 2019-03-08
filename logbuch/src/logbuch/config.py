@@ -56,11 +56,11 @@ class Config(object):
             active_project='default',
             editor=os.environ['EDITOR'] if 'EDITOR' in os.environ else 'vi',
             extension='.md',
-            pdf_cmd=','.join([self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]),
+            pdf_cmd=' , '.join([self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]),
             g_auto_commit=True,
             pandoc_from_format='markdown',
             pandoc_to_format='latex',
-            pandoc_extra_args=','.join(['--biblatex','--listings'])
+            pandoc_extra_args=' , '.join(['--biblatex','--listings'])
         )
 
     def _get_cmd_args(self,make,list,remove,conf,proj,git,subject):
@@ -113,7 +113,7 @@ class Config(object):
 
     def _check_pdf_tool(self,tool):
         try:
-            tmp = tool.split(',')
+            tmp = [x.strip() for x in tool.split(',')]
             if not any('logbuch_file' in x for x in tmp):
                 raise Exception('PDF_CMD parameter in config file does not have logbuch_file as argument for any command!')
             for cmd in tmp:
@@ -127,7 +127,7 @@ class Config(object):
             return ['']
 
     def _check_pandoc_ex_args(self,s):
-        return s.split(',')
+        return [x.strip() for x in s.split(',')]
 
     def confDir(self):
         return self._base
