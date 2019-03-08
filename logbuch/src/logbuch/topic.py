@@ -92,7 +92,9 @@ class Topic(object):
         newLen, newLine = self._get_file_len()
         changedC = newLen - self._file_len
         changedL = newLine - self._file_lines
-        print('\nSubject "%s" saved!\nContent changed: %+d char, %+d lines\n'%(self._headarise(self._subject),changedC,changedL))
+
+        if (changedC or changedL):
+            print('\nSubject "%s" saved!\nContent changed: %+d char, %+d lines\n'%(self._headarise(self._subject),changedC,changedL))
 
         new_cont = self._get_full_content_open()
         for line in difflib.unified_diff(self._full_content.split('\n'),new_cont.split('\n'),'Original','Current',lineterm=''):
@@ -265,7 +267,7 @@ class TopicHeader(object):
 
         if (changedC or changedL) and self._conf.isAutoCommit():
             print('\nGit autocommiting...\n\n')
-            Git.autoCommit(self._conf,self._subject+self._ext,changedC,changedL)
+            Git.autoCommit(self._conf,'.'+self._subject+self._ext,changedC,changedL)
 
     def _get_full_content_open(self):
         with open(self._path,'r') as f:
