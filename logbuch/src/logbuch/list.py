@@ -5,12 +5,13 @@ def list(conf,proj):
     path = conf.projsDir() # projects root
     actu = conf.actProj()  # actual active project
     proj = proj if proj else actu # if a project name was passed
+    extt = conf.getExt()
 
     # listing topics inside active or all projects
-    dic = listDir(path,proj)
+    dic = listDir(path,proj,extt)
     printTree(dic,conf.getExt(),actu,path)
 
-def listDir(path,proj):
+def listDir(path,proj,ext):
     if not os.path.exists(path):
         print('Projects folder absent! %s'%path)
         sys.exit()
@@ -30,7 +31,7 @@ def listDir(path,proj):
         if proj not in dic:
             dic[proj] = []
         for topic in os.listdir(path+'/'+proj):
-            if not '.' == topic[0]: # ignoring hidden files
+            if not '.' == topic[0] and topic.endswith(ext): # ignoring hidden files
                 dic[proj].append(topic)
     return dic
 
