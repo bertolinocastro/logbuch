@@ -141,6 +141,10 @@ class Topic(object):
     def getHeaderContents(self):
         return self._header_h.getFileContents()
 
+    def delete(self):
+        os.remove(self._path)
+        self._header_h.delete()
+
 # header helper class
 class TopicHeader(object):
     _base = ''
@@ -187,7 +191,7 @@ class TopicHeader(object):
                     print('"%s" does not have the minimum content.'%self._headarise(self._subject))
                     overWrite = True
 
-                if overWrite:
+                if overWrite and not self._conf._remv:
                     if not self._checkBoolInput('Subject header content is going to be prepended by the new header.\nAre you sure? [y/n]: '):
                         sys.exit(0)
                     print('Prepending...')
@@ -302,3 +306,6 @@ class TopicHeader(object):
                 'date':     self._date,
                 'text':     self._full_content
         }
+
+    def delete(self):
+        os.remove(self._path)
