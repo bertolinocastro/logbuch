@@ -32,7 +32,7 @@
     title: %(title)s
     subtitle: %(subtitle)s
     author: %(author)s
-    date: $(date)s
+    date: %(date)s
     # institute: ETHZ
 
     toc: true
