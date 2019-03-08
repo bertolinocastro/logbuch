@@ -57,7 +57,7 @@ Besides, I felt that writing them as fast as one can just open one's text editor
 - [x] Creation, edition and compilation to _LaTeX_
 - [x] Integration with git
 - [x] Bash completion
-- [ ] Conversion of _Markdown_ tags to _LaTeX_ ones
+- [x] Conversion from _Markdown_ to _LaTeX_
 - [ ] _Want more? Feel free to ask desired features as stated [here](#issues-and-desired-features)._
 
 ## Installation
@@ -66,7 +66,7 @@ Logbuch is written with _setuptools_, as it's aimed to be easy to install.
 
 **Warning:** Logbuch was only tested at Linux environments (Ubuntu specifically), so if any issues occur on your installation, please let me know.
 
-__Warning 2:__ Logbuch will append an `eval` command to your user's shell starter script. At this moment, just `.bashrc` is supported. After installing, it will work on your next login.
+__Warning 2:__ Logbuch will append an `eval` command to your user's shell starter script in order to activate `autocompletion`. At this moment, just `.bashrc` is supported. After installing, it will work on your next login.
 
 ### Requirements
 
@@ -76,12 +76,16 @@ Logbuch depends on:
 3. [Click](https://click.palletsprojects.com/en/7.x/)
 4. [Whichcraft](https://github.com/pydanny/whichcraft)
 5. [pypandoc](https://github.com/bebraw/pypandoc)
-5. [Python3 venv](https://docs.python.org/3/library/venv.html)
-6. Any text editor callable from terminal <sup>1</sup>
-7. Any _LaTeX_ compiler callable from terminal <sup>2</sup>
+6. [Python3 venv](https://docs.python.org/3/library/venv.html)
+7. [Pandoc](https://pandoc.org/installing.html) <sup>\*</sup>
+8. Any text editor callable from terminal <sup>1</sup>
+9. Any _LaTeX_ compiler callable from terminal <sup>2</sup>
+
+Make sure you have installed requirements `1,2,7,8,9` before proceeding to next installation steps. Else requirements should be handled by `setuptools` itself.
 
 <sup>1</sup> Commonly used are: vi, vim, nano, emacs, gedit.  
 <sup>2</sup> I would strongly suggest `latexmk` for this purpose, since it was the best in my tests.
+ <sup>\*</sup> _Latest version recommended_
 
 ### Automated install
 
@@ -126,7 +130,7 @@ $ cd logbuch
 $ python3 -m pip install .
 ```
 
-_**Warning**_ _You may notice the last command may not work even after installing `python3.7` or higher. In order to solve that, just `export` prepending your newer python command to `PATH`. You may also create an alias or a symlink for it. There are many resources on the web to solve this problem._
+_**Warning:**_ _You may notice the last command may not work even after installing `python3.7` or higher. In order to solve that, just `export` prepending your newer python command to `PATH`. You may also create an alias or a symlink for it. There are many resources on the web to solve this problem._
 
 ## Configuration
 
@@ -134,38 +138,57 @@ After installing Logbuch, it will use its default configuration, that is stored 
 
 The default configuration file is as follows:
 
-```sh
-PROJECTS_FOLDER=/home/user/logbuch_projects
-ACTIVE_PROJECT=default
-EDITOR=vi
-EXTENSION=.md
-PDF_CMD=latexmk -pdf -silent %log_file%
-G_AUTO_COMMIT=True
+```ini
+[DEFAULT]
+projects_folder = /home/user/logbuch_projects
+active_project = default
+editor = vi
+extension = .md
+pdf_cmd = latexmk -pdf -silent logbuch_file, latexmk -c -silent
+g_auto_commit = True
+ignore_dir =
+pandoc_from_format = markdown
+pandoc_to_format = latex
+pandoc_extra_args = --biblatex,--listings
 ```
 
 In parts:
 
-1. `PROJECTS_FOLDER`  
-  It's the full path to where all projects will be stored as well as the compiled _LaTeX_ output. I would suggest it to be a git repository, as you will probably care about the history of your notes.
+1. `projects_folder`  
+  It's the full path to where all projects will be stored as well as the compiled _LaTeX_ output. I strongly suggest it to be a git repository, as you will probably care about the history of your notes.
 
-2. `ACTIVE_PROJECT`  
-  It's the name of the active ___Project___ that Logbuch uses to create new ___Subjects___. You should not care about this parameter, just don't let it empty, although Logbuch will use _default_ as actual ___Project___ name.
+2. `active_project`  
+  It's the name of the active ___Project___ that Logbuch uses to create new ___Subjects___. You should not care about this parameter, just don't let it empty because Logbuch will emit an error message and you should select or create one through `-p` option.
 
-3. `EDITOR`  
+3. `editor`  
   It's the command which Logbuch calls when you use any edition option. The command just needs to accept a file name as argument. This is not a problem, since the majority of command line text editors follows this rule.
 
-4. `EXTENSION`  
+4. `extension`  
   It's the extension used on all ___Subject___ text files. Logbuch does not discriminate which one is used. Just be advised that it saves and reads using the __same__ extension, so do not change it without refactoring your old files extension.
 
-5. `PDF_CMD`  
-  It's the full command used to compile your ___Subjects___ in a _LaTeX_ document. You can pass any arguments to your _LaTeX_ compiler. Just make sure that your command is the first space-ended string after the __=__ and that it has `%log_file%`, as this is where the input __.tex__ file will the replaced.
+5. `pdf_cmd`  
+  It's the full command used to compile your ___Subjects___ in a _LaTeX_ document. You can pass any arguments to your _LaTeX_ compiler. Just make sure that your command is the first space-ended string after the __=__ and that it has `logbuch_file`, as this is where the input __.tex__ file will the replaced. You may also separate multiple commands with `commas`. For instance, the default command will compile to _LaTeX_ and then clean the unnecessary files in output directory.
 
-6. `G_AUTO_COMMIT`  
-  It's a flag. If `True`, Logbuch will do a `git add` and `git commit` every time you change a ___Subject___, else it will do nothing. This is an optional config entry. The default is `True`.
+6. `g_auto_commit`  
+  It's a flag. If it results in `True`<sup>1</sup>, Logbuch will do a `git add` and `git commit` every time you change a ___Subject___, else it will do nothing. This is an optional config entry. Default is `True`.
+
+7. `ignore_dir`  
+  This field accepts a `comma` separated sequence of directories inside you ___Projects___ folder that Logbuch must ignore at any step. Be aware that hidden directories (that starts with `.`) are already ignored by Logbuch.
+
+8. `pandoc_from_format`  
+  It's the input format to be sent to `pandoc`'s `--from` option. Default is `markdown`.
+
+9. `pandoc_to_format`  
+  It's the output format to be sent to `pandoc`'s `--to` option. Default is `latex`.
+
+10. `pandoc_extra_args`  
+  It's a sequence of `comma` separated arguments and options to be sent to the last `pandoc` call (the final compilation step).
 
 FYI:
-- Each entry may have spaces before and after the __=__ sign.
-- `PDF_CMD` may have a sequence of commands separated by `;`.
+- You can make one-line comments with `#` and `;`.
+- Each entry may have spaces before and after the __=__ sign. For more rules, please read the [Python's ConfigParser documentation](https://docs.python.org/3/library/configparser.html).
+
+<sup>1</sup> This field may handle many inputs and result as `True` or `False`. Please take a look at [Python's ConfigParser doc](https://docs.python.org/3/library/configparser.html#supported-datatypes).
 
 ## Usage
 
@@ -173,7 +196,7 @@ The basic usage of Logbuch is creating/opening a ___Subject___ inside the active
 ```sh
 logbuch subject name with how many words you want
 ```
-This command will open your text editor with a predefined header. The header contains the ___Subject___ and the date of creation. You must write everything below the `# ------` line, because information before it is handled by Logbuch.
+This command will open your text editor with that ___Subject___ content. It will create an empty file if it's a new one. A predefined header is also created in `YAML` format in a file with the same name but starting with `.` (so it's hidden from standard file managers) in the same folder as the ___Subject___ content file. More details in [this section](#pandoc-templates).
 
 If you want to open your last edited ___Subject___ inside the active ___Project___, just type Logbuch without any argument:
 ```sh
@@ -192,7 +215,7 @@ As stated in [config](#configuration) parameter `G_AUTO_COMMIT`, every time you 
 ---
 ###### `-rm/--remove` option
 
-This option is used to delete any ___Subject___ inside the active ___Project___. It requires an argument that must be the ___Subject___ name. It will prompt your confirmation to delete.
+This option is used to delete any ___Subject___ and its header inside the active ___Project___. It requires an argument that must be the ___Subject___ name. It will prompt your confirmation to delete.
 ```sh
 logbuch -rm subject name with how many words you want
 ```
@@ -227,26 +250,26 @@ logbuch -l all
 ---
 ###### `-mk/--make` option
 
-This option will get all content below the `# ------` string inside your ___Subjects___ and put them as `\subsection{}` content in the compiled file.
-The ___Subject___ and the date of creation will become the subsection title and subtitle, respectively. Your ___Project___ will become a `\section{}` and its name will be the section title. The author of the compiled _LaTeX_ file is obtained from your system's user name.
-
-Using this option without arguments makes it compile for all ___Projects___ and save the _LaTeX_ data as `all.tex` and `all.pdf`.
+Using this option without arguments makes it compile the active ___Project___ and save the _LaTeX_ data as `<project_name>.tex` and `<project_name>.pdf`.
 ```sh
 logbuch -mk
 ```
-You may also pass a ___Project___ name, so Logbuch will compile only it with its contents.
+
+You may also pass a ___Project___ name, so Logbuch will compile only it with its contents, or pass `all` and argument and Logbuch will compile the content from all projects you have. (In the later case, outputs will be named `all.tex` and `all.pdf`)
 ```sh
 logbuch -mk name of your project
 ```
 
-All outputs are saved in your ___Projects___ folder root and are named with your ___Project___ name followed by `.tex` extension for the _LaTeX_ input and `.pdf` for the output. Feel free to edit them as you wish.
+All outputs are saved in your ___Projects___ folder root and are named with your ___Project___ name followed by `.tex` extension for the _LaTeX_ input and `.pdf` for the output. Feel free to edit these files as you wish.
 
-If you have an existing `.tex` file, Logbuch will prompt you if you want to overwrite it, so you can just recompile a previous `.tex` version.
+If you have an existing `.tex` file with same name as output, Logbuch will prompt you if you want to overwrite it, so you can just recompile a previous `.tex` version.
+
+For more detailed explanation about compiling steps, please read [`pandoc` templates](#pandoc-templates).
 
 ---
 ###### `-g/--git` option
 
-_Warning: Bash Completion is not working properly with this option when a `git`'s option is typed right after the `--`. I made a Pull Request to the Click developers in order to solve this. As soon as possible I will update this._
+_Warning: Bash Completion is not working properly with this option when a `git`'s option is typed after the `--`. I made a Pull Request for Click developers in order to solve this. As soon as possible I will update this._
 
 This option is just a convenience to use `git` inside your ___Projects___ root folder without walking into it. In order to use it properly, you must pass double dashes `--` right after `-g/--git`, else Logbuch will understand any dash-started string as another option.
 
@@ -281,8 +304,7 @@ FYI:
 - Logbuch may handle cases that are not discussed in this README. If you get any trouble using Logbuch, please, let me know.
 - Any dash-started string will be treated as an option if you do not use the double dash `--` separator. You shall use it right after the first option.
 
-## Supported Markdown tags
-(~~not yet implemented~~)
+## Pandoc templates
 
 ## Issues and desired features
 
