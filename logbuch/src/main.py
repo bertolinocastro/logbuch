@@ -24,10 +24,11 @@ def cli(make, list, remove, conf, proj, git, subject):
     It also compiles in LaTeX for your LabBook/research history. :-)
 
     """
+    config = Logbuch.Config(make, list, remove, conf, proj, git, subject)
 
     args = builtins.list(subject)
     # getting single string subject
-    subject = treatInput(subject)
+    subject = treatInput(subject,config.getExt())
     if checkArgs(make, list, remove, conf, proj, git, subject):
         print('Sorry, but only one option is accepted')
         sys.exit(1)
@@ -37,7 +38,6 @@ def cli(make, list, remove, conf, proj, git, subject):
         print('Hidden Projects or Subjects are not allowed! "%s"' % subject)
         sys.exit()
 
-    config = Logbuch.Config(make, list, remove, conf, proj, git, subject)
 
     if conf:
         config.edit()
@@ -60,8 +60,8 @@ def checkArgs(make, list, remove, conf, proj, git, subject):
         return True
 
 
-def treatInput(s):
-    return ' '.join(s).lower()
+def treatInput(s,ext):
+    return '_'.join(s).replace(ext,'').lower()
 
 
 def checkHidden(s):
