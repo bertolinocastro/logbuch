@@ -66,6 +66,10 @@ class Topic(object):
 
         self._header_h = TopicHeader(self._subject,conf,proj)
 
+        newLen, newLine = self._get_file_len()
+        self._file_len = newLen
+        self._file_lines = newLine
+
     def _check_hidden(self,subj):
         if subj and '.' == subj[0]:
             print('Hidden subjects "%s" are not allowed!'%subj)
