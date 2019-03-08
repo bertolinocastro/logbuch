@@ -11,22 +11,26 @@ def auto_comp_callback(ctx, args, incomplete):
     root = config.projsDir()
     actP = config.actProj()
     exte = config.getExt()
+    ignore = config.ignoreDirs()
 
     def check(a, b, c): return a in c or b in c
 
-    if check('-mk', '--make', args) or check('-p', '--proj', args):
-        projs = [x for x in listProj(root) if x.startswith(incomplete)]
-        ret = projs if len(args) < 2 else []
-    elif check('-l', '--list', args):
-        projs = [x for x in listProj(root) + ['all'] if x.startswith(incomplete)]
-        ret = projs if len(args) < 2 else []
+    if check('-p', '--proj', args) or check('-mk', '--make', args) or check('-l', '--list', args):
+        projs = ['all' if 'all'.startswith(incomplete) else None] \
+            if not check('-p','--proj',args) and len(args)<2 else [None]
+        _args_remove_option(args)
+        l,incomplete = _fancy_incomplete(args,incomplete)
+        projs += [_headarise(x)[l+1:] for x in listProj(root,ignore) if _headarise(x).startswith(incomplete)]
+        ret = projs
     elif check('-g', '--git', args):
         ret = _get_git_completion(root, actP, args, incomplete)
     elif check('-c', '--conf', args) or check('-h', '--help', args):
         ret = []
     else:  # with no options passed or with -rm/--remove
-        files = [x.replace(exte, '') for x in listFiles(root, actP)
-                 [actP] if exte in x and x.startswith(incomplete)]
+        _args_remove_option(args,options=['-rm','--remove'])
+        l,incomplete = _fancy_incomplete(args,incomplete)
+        files = [_headarise(x.replace(exte, ''))[l+1:] for x in listFiles(root, actP,exte,ignore)[actP] \
+            if exte in x and _headarise(x).startswith(incomplete)]
         ret = sorted(list(set(files)-set(args)))
 
     return ret
@@ -59,3 +63,20 @@ def _get_git_completion(root, actP, args, incomplete):
     singDash = set(matches) - doubDash
 
     return list(sorted(singDash)+sorted(doubDash))
+
+def _file_titable(s,ext):
+    return '_'.join(s.lower().split(' ')).replace(ext,'')
+def _headarise(s):
+    return ' '.join(s.capitalize().split('_'))
+
+def _fancy_incomplete(args,incomplete):
+    args = ' '.join(args); l = len(args)
+    if l>0: incomplete = ' '.join([args,incomplete])
+    else: l -=1
+    return l,incomplete
+
+def _args_remove_option(args,options=None):
+    if not options:
+        _options = ['-p','--proj','-g','--git','-mk','--make','-l','--list','-rm','--remove','-c','--conf']
+    else: _options = options
+    args[:] = [x for x in args if not x in _options]
