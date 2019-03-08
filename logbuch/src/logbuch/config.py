@@ -113,7 +113,7 @@ class Config(object):
         self._IGNORE_DIR = [x.strip() for x in s.split(',')] + ['all']
         if self._cfg_dict['active_project'] in self._IGNORE_DIR:
             print('ERROR: Active directory is in ignored directories list!\nCheck your config file with "-c".')
-            sys.exit()
+            if not self._cfgF: sys.exit()
 
     def _check_actv_proj(self,s):
         if (self._list or self._make or self._buch or self._remv) and (not s.strip() or len(s.strip()) < 1):
