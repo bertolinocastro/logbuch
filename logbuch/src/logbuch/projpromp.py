@@ -7,13 +7,17 @@ import readline
 def prompProj(config,proj):
     path = config.projsDir()
     act = config.actProj()
+    ignore = config.ignoreDirs()
 
     proj = _file_titable(proj)
 
     # listing topics inside active or all projects
-    lis = sorted(listDir(path))
+    lis = sorted(listDir(path,ignore))
 
     if proj:
+        if proj == 'all':
+            print('Project can\'t be "all". This is a reserved keyword.')
+            sys.exit()
         if proj[0] == '.':
             print('Hidden project name "%s" is not allowed.'%_headarise(proj))
             sys.exit()
@@ -61,12 +65,12 @@ def createProj(path,proj):
 def delProj(path,proj):
     shutil.rmtree(path+'/'+proj)
 
-def listDir(path):
+def listDir(path,ignore):
     if not os.path.exists(path):
         print('Projects folder absent! %s'%path)
         sys.exit()
 
-    projs = [x for x in os.listdir(path) if '.' != x[0] and os.path.isdir(path+'/'+x)]
+    projs = [x for x in os.listdir(path) if '.' != x[0] and x not in ignore and os.path.isdir(path+'/'+x)]
     return projs
 
 # it prints the entire found project tree

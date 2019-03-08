@@ -37,6 +37,7 @@ class Config(object):
     _default_PDF_DIR = '~/.logbuch/tex_tmp'
 
     _G_AUTO_COMMIT = None
+    _IGNORE_DIR = None
     _PANDOC_EXTRA_ARGS = None
 
     _cfg_parser = None
@@ -58,6 +59,7 @@ class Config(object):
             extension='.md',
             pdf_cmd=' , '.join([self._PDF_CMD_FULL_def,self._PDF_CMD_CLEAR_def]),
             g_auto_commit=True,
+            ignore_dir='',
             pandoc_from_format='markdown',
             pandoc_to_format='latex',
             pandoc_extra_args=' , '.join(['--biblatex','--listings'])
@@ -99,12 +101,19 @@ class Config(object):
         self._add_logbuch_section()
 
         self._check_actv_proj(dat['active_project'])
+        self._check_ignore_dir(dat['ignore_dir'])
         self._PDF_CMD = self._check_pdf_tool(dat['pdf_cmd'])
         self._PANDOC_EXTRA_ARGS = self._check_pandoc_ex_args(dat['pandoc_extra_args'])
 
 
         if self._confF_absent:
             self._confSave()
+
+    def _check_ignore_dir(self,s):
+        self._IGNORE_DIR = [x.strip() for x in s.split(',')] + ['all']
+        if self._cfg_dict['active_project'] in self._IGNORE_DIR:
+            print('ERROR: Active directory is in ignored directories list!\nCheck your config file with "-c".')
+            sys.exit()
 
     def _check_actv_proj(self,s):
         if (self._list or self._make or self._buch or self._remv) and (not s.strip() or len(s.strip()) < 1):
@@ -151,6 +160,9 @@ class Config(object):
     def getFromToFormats(self):
         return self._cfg_parser.get('USER','pandoc_from_format'),\
             self._cfg_parser.get('USER','pandoc_to_format')
+
+    def ignoreDirs(self):
+        return self._IGNORE_DIR
 
     def setActive(self,proj):
         self._cfg_parser.set('USER','active_project',proj)

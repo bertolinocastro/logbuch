@@ -40,7 +40,7 @@ class Md2Tex(object):
             self._pandoc_args = config.getPandocExArgs()
 
         # listing topics inside active or all projects
-        dic = listDir(path,proj,config.getExt())
+        dic = listDir(path,proj,config.getExt(),config.ignoreDirs())
         self._projects = list(dic)
 
         self._get_contents(dic,config)
@@ -60,7 +60,7 @@ class Md2Tex(object):
             ])
 
             if len(dic[proj]) < 1:
-                print('Warning: Project %s is Empty!'%proj)
+                print('Warning: Project %s is Empty!'%self._headarise(proj))
                 continue
 
             topC = [Topic(topic,config,proj=proj).getFileContents() for topic in dic[proj]]
@@ -135,12 +135,12 @@ class Md2Tex(object):
         os.chdir(oldCd)
 
         projs = self._projects
-        print('Project%s %s compiled as %s.pdf'%('s' if len(projs)>1 else '',
-                       ','.join(projs), self._proj))
+        print('Project%s "%s" compiled as %s.pdf'%('s' if len(projs)>1 else '',
+                       ','.join([self._headarise(x) for x in projs]), self._proj))
 
 # -----
 
-def listDir(path,proj,ext):
+def listDir(path,proj,ext,ignore):
     if not os.path.exists(path):
         print('Projects folder absent! %s'%path)
         sys.exit()
@@ -153,9 +153,9 @@ def listDir(path,proj,ext):
         if not os.path.exists(path+'/'+proj):
             print('Project folder absent! %s\nPass an existing project as argument. Alternatively, check your active project with "-c" or select one with "-p" options.'%(path+'/'+proj))
             sys.exit()
-        projs = [proj]
+        projs = [proj] if proj not in ignore else [None]
     else:
-        projs = [x for x in os.listdir(path) if '.' != x[0] and os.path.isdir(path+'/'+x)]
+        projs = [x for x in os.listdir(path) if '.' != x[0] and x not in ignore and os.path.isdir(path+'/'+x)]
 
     for proj in projs:
         if proj not in dic:
