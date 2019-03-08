@@ -1,8 +1,12 @@
-\chapter*{$if(subj-titl)$\LARGE{$subj-titl$}$endif$ $if(subj-date)$\\ \normalfont\large{\textit{$subj-date$}}$endif$}
+\chapter*{$if(subj-titl)$\LARGE{$subj-titl$}$endif$}
 
-$if(subj-titl)$\addcontentsline{toc}{chapter}{$$\diamond$$ $subj-titl$}$endif$
+$if(subj-titl)$\addcontentsline{toc}{chapter}{$$\circ$$ $subj-titl$}$endif$
 \setcounter{section}{0}
 
+\def \logbuchsubjectmark {$if(subj-titl)$$subj-titl$$else$$endif$}
+\def \logbuchsubjectdatemark {$if(subj-date)$$subj-date$$else$$endif$}
+\def \logbuchsubjectauthmark {\textit{$for(subj-auth)$$subj-auth$$sep$, $endfor$}}
+\thispagestyle{eisvogel-header-footer}
 $if(body)$
 $body$
 $else$
