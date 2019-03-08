@@ -1,9 +1,10 @@
 ---
-    documentclass: 'scrreprt'
+    # documentclass: 'scrreprt'
+    book: true
     fontsize: 12pt
     papersize: a4
     # fontfamily: helvet
-    # keywords: [bookmarks]
+    keywords: [Markdown]
     # geometry:
     #     - left=3.5cm
     #     - right=2.5cm
@@ -16,26 +17,64 @@
 
     header-includes:
         # - '\renewcommand{\familydefault}{\sfdefault}'
+        - '\renewcommand{\thetable}{\arabic{table}}'
+        - '\renewcommand{\thefigure}{\arabic{figure}}'
         - '\renewcommand{\thesection}{\arabic{section}}'
+        - '\usepackage{lipsum}'
         # - '\usepackage{helvet}'
         # - '\renewcommand{\familydefault}{\sfdefault}'
         # - '\usepackage[sfdefault]{noto}'
         # - '\usepackage[T1]{fontenc}'
         # - '\usepackage{noto}'
-        - '\usepackage{arev}'
-        - '\usepackage[T1]{fontenc}'
+        # - '\usepackage{arev}'
+        # - '\usepackage[T1]{fontenc}'
 
     title: %(title)s
     subtitle: %(subtitle)s
     author: %(author)s
-    date: %(date)s
+    date: $(date)s
     # institute: ETHZ
 
     toc: true
+    toc-title: 'Projects'
+    toc-own-page: true
     # lot: true
     # lof: true
     # biblatex: true
+    first-chapter: 1
 
     colorlinks: true
     # linkcolor:
+    titlepage: true
+    titlepage-color: '3E3E3B'
+    titlepage-text-color: 'EBECED'
+    titlepage-rule-color: 'A2AAB0'
+
+    # partpage-color: 'CBC5C1'
+
+    # french connection colors
+    # 3E3E3B
+    # EBECED
+    # A2AAB0
+    # CBC5C1
+    # 4C586F
+
+    biblatex: true
+    link-citations: true
+    # bibliography:
+    #     - 'reference.bib'
+    # # this filed sets to show all reference entries without needing to cite them
+    # nocite: |
+    #     @*
+
+    title-meta: 'Logbuch'
+
+    classoption: [oneside]
+    # classoption: [openany,oneside]
+    listings: true
+    # logo: '.logoinverted.png'
+    graphics: true
+    tables: true
+    links-as-notes: true
+    logo-width: 200
 ...
