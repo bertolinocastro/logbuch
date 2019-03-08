@@ -42,6 +42,9 @@ class Md2Tex(object):
         # listing topics inside active or all projects
         dic = listDir(path,proj,config.getExt(),config.ignoreDirs())
         self._projects = list(dic)
+        if len(dic)<1:
+            print('No projects to compile!\nMaybe you are passing an ignored directory.')
+            sys.exit()
 
         self._get_contents(dic,config)
         self._writeContents()
@@ -153,7 +156,7 @@ def listDir(path,proj,ext,ignore):
         if not os.path.exists(path+'/'+proj):
             print('Project folder absent! %s\nPass an existing project as argument. Alternatively, check your active project with "-c" or select one with "-p" options.'%(path+'/'+proj))
             sys.exit()
-        projs = [proj] if proj not in ignore else [None]
+        projs = [proj] if proj not in ignore else []
     else:
         projs = [x for x in os.listdir(path) if '.' != x[0] and x not in ignore and os.path.isdir(path+'/'+x)]
 
