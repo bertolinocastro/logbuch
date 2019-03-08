@@ -28,6 +28,8 @@ class Md2Tex(object):
     _pandoc_output = ''
 
     def __init__(self,config,proj):
+        proj = proj if proj else config.actProj() # if a project name was passed
+
         self._config = config
         self._proj = proj
         self._tplates = Tplates(config)
@@ -142,12 +144,15 @@ def listDir(path,proj,ext):
     if not os.path.exists(path):
         print('Projects folder absent! %s'%path)
         sys.exit()
-    if not os.path.exists(path+'/'+proj):
-        print('Project folder absent! %s'%path+'/'+proj)
-        sys.exit()
 
     dic = {}
-    if proj:
+    if proj != 'all':
+        if proj[0] == '.':
+            print('Hidden project name "%s" is not allowed. It will not be read.'%proj)
+            sys.exit()
+        if not os.path.exists(path+'/'+proj):
+            print('Project folder absent! %s\nPass an existing project as argument. Alternatively, check your active project with "-c" or select one with "-p" options.'%(path+'/'+proj))
+            sys.exit()
         projs = [proj]
     else:
         projs = [x for x in os.listdir(path) if '.' != x[0] and os.path.isdir(path+'/'+x)]
