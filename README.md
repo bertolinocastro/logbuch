@@ -89,7 +89,7 @@ Make sure you have installed requirements `1,2,7,8,9` before proceeding to next 
 
 <sup>1</sup> Commonly used are: vi, vim, nano, emacs, gedit.  
 <sup>2</sup> I would strongly suggest `latexmk` for this purpose, since it was the best in my tests.  
-<sup>\*</sup> _Latest version recommended._ I recommend downloading from the GitHub's release, as the `apt` package is not yet updated (at the time of writing this README).
+<sup>\*</sup> _Latest version recommended._ I recommend downloading from the GitHub's release, as the `apt` package is not yet updated (at the time of writing this README).  
 <sup>!</sup> If you are converting to _LaTeX_, you will probably face problems with dependencies at the compilation step. For the default `templates`, I strongly recommend you to install the following packages: `biber` (for bibliography usage), `texlive-latex-extras`, `texlive-fonts-recommended`, `texlive-fonts-extra`, `texlive-bibtex-extra` and `texlive-base`.
 
 ### Automated install
@@ -160,7 +160,7 @@ pandoc_extra_args = --biblatex,--listings
 In parts:
 
 1. `projects_folder`  
-  It's the full path to where all projects will be stored as well as the compiled _LaTeX_ output. I strongly suggest it to be a git repository, as you will probably care about the history of your notes.
+  It's the full path to where all ___Projects___ will be stored as well as the compiled _LaTeX_ output. I strongly suggest it to be a git repository, as you will probably care about the history of your notes.
 
 2. `active_project`  
   It's the name of the active ___Project___ that Logbuch uses to create new ___Subjects___. You should not care about this parameter, just don't let it empty because Logbuch will emit an error message and you should select or create one through `-p` option.
@@ -215,7 +215,7 @@ logbuch -l -- -project --starting-- -with- dashes
 logbuch -g -- commit -m "A safely passed commit"
 ```
 
-As stated in [config](#configuration) parameter `G_AUTO_COMMIT`, every time you change any ___Subject___ file, if Logbuch is in `auto commit mode`, it will try to `add` and `commit` that subject. In order to work, Logbuch expects that there is a `git` repository inside your ___Projects___ root folder.
+As stated in [config](#configuration) parameter `G_AUTO_COMMIT`, every time you change any ___Subject___ file, if Logbuch is in `auto commit mode`, it will try to `add` and `commit` that ___Subject___. In order to work, Logbuch expects that there is a `git` repository inside your ___Projects___ root folder.
 
 ---
 ###### `-rm/--remove` option
@@ -260,16 +260,16 @@ Using this option without arguments makes it compile the active ___Project___ an
 logbuch -mk
 ```
 
-You may also pass a ___Project___ name, so Logbuch will compile only it with its contents, or pass `all` and argument and Logbuch will compile the content from all projects you have. (In the later case, outputs will be named `all.tex` and `all.pdf`)
+You may also pass a ___Project___ name, so Logbuch will compile only it with its contents, or pass `all` as argument and Logbuch will compile the content from all ___Projects___ you have. (In the later case, outputs will be named `all.tex` and `all.pdf`.)
 ```sh
 logbuch -mk name of your project
 ```
 
-All outputs are saved in your ___Projects___ folder root and are named with your ___Project___ name followed by `.tex` extension for the _LaTeX_ input and `.pdf` for the output. Feel free to edit these files as you wish.
+All outputs are saved in your ___Projects___ root folder and are named with your ___Project___ name followed by `.tex` and `.pdf` for the compilation output (by default). Feel free to edit these files as you wish.
 
 If you have an existing `.tex` file with same name as output, Logbuch will prompt you if you want to overwrite it, so you can just recompile a previous `.tex` version.
 
-For more detailed explanation about compiling steps, please read [`pandoc` templates](#pandoc-conversion).
+For more detailed explanation about compiling steps, please read [this section](#pandoc-conversion).
 
 ---
 ###### `-g/--git` option
@@ -296,7 +296,7 @@ This option does just call `git` plus the arguments you passed. I would suggest 
 ---
 ###### `-c/--conf` option
 
-This option opens the configuration file `~/.logbuch/conf.cfg` in your text editor, so you can edit it by hand. The parameters were deeply discussed at [Configuration section](#configuration).
+This option opens the configuration file `~/.logbuch/conf.cfg` in your text editor, so you can edit it by hand. The parameters were deeply discussed at [configuration section](#configuration).
 
 ---
 ###### `-h/--help` option
@@ -311,11 +311,11 @@ FYI:
 
 ## Pandoc conversion
 
-As Logbuch aims to be an easy-to-use and portable program, `Pandoc` showed to be the best tool for typing conversion, as it allows you to write your notes in many markup languages and convert it to many others.
+As Logbuch aims to be an easy-to-use and portable program, `pandoc` showed to be the best tool for text conversion, as it allows you to write your notes in many markup languages and convert them to many others.
 
-For the default procedure defined by me when developing Logbuch, I made all tests and integration with `pandoc`'s `markdown` as input format and `latex` as output one. If you try to use any other format, please let me know whether it worked and what problems you faced through and [Issue](https://github.com/bertolinocastro/logbuch/issues).
+For the default procedure defined by me when developing Logbuch, I made all tests and integration with `pandoc`'s `markdown` as input format and `latex` as output one. If you try to use any other format, please let me know whether it worked and what problems you faced through an [issue](#issues-and-desired-features).
 
-Besides that, Logbuch uses `pandoc` at three different steps when before compiling to _LaTeX_.
+Besides that, Logbuch uses `pandoc` at three different steps before compiling to _LaTeX_.
 
 1. [___Subject___ conversion](#subject-conversion)
 2. [___Project___ conversion](#project-conversion)
@@ -325,7 +325,7 @@ Each of these steps uses the logic: `pandoc template` + `pandoc YAML` + `user wr
 
 - `pandoc template` is a file where you describe the structure of your output text. `pandoc` accepts variables and replace them by their definition at `pandoc YAML`.
 - `pandoc YAML` is a file consisting of `YAML` blocks that define variables used in `pandoc template`
-- `user written content` are all text written outside these two files above and that is written in the `from format` to be converted.
+- `user written content` are all text written outside these two files above and that is written in the [`pandoc_from_format`](#configuration) to be converted.
 
 ### ___Subject___ conversion
 
@@ -343,7 +343,7 @@ _Default template philosophy:_ Each ___Subject___ is thought as a `chapter` of a
 
 ### ___Project___ conversion
 
-Each ___Project___ will have a copy of the default ___Project___ `YAML` named `.proj.yaml` inside it. The same process of ___Subject___ will be done. However, each ___Project___ output will come before all of its ___Subjects___.
+Each ___Project___ will have a copy of the default ___Project___ `YAML` named `.proj.yaml` inside it. The same process described for ___Subject___ will be done. However, each ___Project___ output will come before all of its ___Subjects___.
 
 If you want to use other than the default `template`, you must save your own `template` at the ___Projects___ folder and name it `.proj.template.tex`.
 
