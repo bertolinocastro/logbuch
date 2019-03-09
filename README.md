@@ -37,7 +37,10 @@ _<sup>def</sup>_: By default, Logbuch will convert from [`pandoc`'s _Markdown_](
   - [-g/--git](#-g--git-option)
   - [-c/--conf](#-c--conf-option)
   - [-h/--help](#-h--help-option)
-- [Supported Markdown tags](#supported-markdown-tags)
+- [Pandoc conversion](#pandoc-conversion)
+    - [___Subject___ conversion](#subject-conversion)
+    - [___Project___ conversion](#project-conversion)
+    - [Whole document conversion](#whole-document-conversion)
 - [Issues and desired features](#issues-and-desired-features)
 - [Credits](#credits)
 - [License](#license)
@@ -80,12 +83,14 @@ Logbuch depends on:
 7. [Pandoc](https://pandoc.org/installing.html) <sup>\*</sup>
 8. Any text editor callable from terminal <sup>1</sup>
 9. Any _LaTeX_ compiler callable from terminal <sup>2</sup>
+10. _LaTeX_ dependencies <sup>!</sup>
 
 Make sure you have installed requirements `1,2,7,8,9` before proceeding to next installation steps. Else requirements should be handled by `setuptools` itself.
 
 <sup>1</sup> Commonly used are: vi, vim, nano, emacs, gedit.  
-<sup>2</sup> I would strongly suggest `latexmk` for this purpose, since it was the best in my tests.
- <sup>\*</sup> _Latest version recommended_
+<sup>2</sup> I would strongly suggest `latexmk` for this purpose, since it was the best in my tests.  
+<sup>\*</sup> _Latest version recommended._ I recommend downloading from the GitHub's release, as the `apt` package is not yet updated (at the time of writing this README).
+<sup>!</sup> If you are converting to _LaTeX_, you will probably face problems with dependencies at the compilation step. For the default `templates`, I strongly recommend you to install the following packages: `biber` (for bibliography usage), `texlive-latex-extras`, `texlive-fonts-recommended`, `texlive-fonts-extra`, `texlive-bibtex-extra` and `texlive-base`.
 
 ### Automated install
 
@@ -186,7 +191,7 @@ In parts:
 
 FYI:
 - You can make one-line comments with `#` and `;`.
-- Each entry may have spaces before and after the __=__ sign. For more rules, please read the [Python's ConfigParser documentation](https://docs.python.org/3/library/configparser.html).
+- Each entry may have spaces before and after the `=` sign. For more rules, please read the [Python's ConfigParser documentation](https://docs.python.org/3/library/configparser.html).
 
 <sup>1</sup> This field may handle many inputs and result as `True` or `False`. Please take a look at [Python's ConfigParser doc](https://docs.python.org/3/library/configparser.html#supported-datatypes).
 
@@ -196,7 +201,7 @@ The basic usage of Logbuch is creating/opening a ___Subject___ inside the active
 ```sh
 logbuch subject name with how many words you want
 ```
-This command will open your text editor with that ___Subject___ content. It will create an empty file if it's a new one. A predefined header is also created in `YAML` format in a file with the same name but starting with `.` (so it's hidden from standard file managers) in the same folder as the ___Subject___ content file. More details in [this section](#pandoc-templates).
+This command will open your text editor with that ___Subject___ content. It will create an empty file if it's a new one. A predefined header is also created in `YAML` format in a file with the same name but starting with `.` (so it's hidden from standard file managers) in the same folder as the ___Subject___ content file. More details in [this section](#pandoc-conversion).
 
 If you want to open your last edited ___Subject___ inside the active ___Project___, just type Logbuch without any argument:
 ```sh
@@ -264,7 +269,7 @@ All outputs are saved in your ___Projects___ folder root and are named with your
 
 If you have an existing `.tex` file with same name as output, Logbuch will prompt you if you want to overwrite it, so you can just recompile a previous `.tex` version.
 
-For more detailed explanation about compiling steps, please read [`pandoc` templates](#pandoc-templates).
+For more detailed explanation about compiling steps, please read [`pandoc` templates](#pandoc-conversion).
 
 ---
 ###### `-g/--git` option
@@ -304,7 +309,65 @@ FYI:
 - Logbuch may handle cases that are not discussed in this README. If you get any trouble using Logbuch, please, let me know.
 - Any dash-started string will be treated as an option if you do not use the double dash `--` separator. You shall use it right after the first option.
 
-## Pandoc templates
+## Pandoc conversion
+
+As Logbuch aims to be an easy-to-use and portable program, `Pandoc` showed to be the best tool for typing conversion, as it allows you to write your notes in many markup languages and convert it to many others.
+
+For the default procedure defined by me when developing Logbuch, I made all tests and integration with `pandoc`'s `markdown` as input format and `latex` as output one. If you try to use any other format, please let me know whether it worked and what problems you faced through and [Issue](https://github.com/bertolinocastro/logbuch/issues).
+
+Besides that, Logbuch uses `pandoc` at three different steps when before compiling to _LaTeX_.
+
+1. [___Subject___ conversion](#subject-conversion)
+2. [___Project___ conversion](#project-conversion)
+3. [Whole document conversion](#whole-document-conversion)
+
+Each of these steps uses the logic: `pandoc template` + `pandoc YAML` + `user written content` = `pandoc converted output`. Deeply detailed information about _templates_ and _YAML metadata blocks_ can be found [here](https://pandoc.org/MANUAL.html#templates).
+
+- `pandoc template` is a file where you describe the structure of your output text. `pandoc` accepts variables and replace them by their definition at `pandoc YAML`.
+- `pandoc YAML` is a file consisting of `YAML` blocks that define variables used in `pandoc template`
+- `user written content` are all text written outside these two files above and that is written in the `from format` to be converted.
+
+### ___Subject___ conversion
+
+Each ___Subject___ that is created or edited through Logbuch automatically creates a `YAML` header with default variables used by the default ___Subject___ `template`. This header is created with the same name as the ___Subject___ prepending a dot `.` to it. Therefore it's a hidden file that Logbuch (~~yet~~) does not handle and you must edit it manually. This header is saved in the same path as its ___Subject___.
+
+If you want to use other than the default `template`, you must save your own `template` at the ___Projects___ folder and name it `.subj.template.tex` (don't forget the initial `.`).
+
+Also, you can add any variable following the `YAML` syntax and use them in the `template`, as `pandoc` defines in its documentation.
+
+Logbuch will compile individually each ___Subject___ with the same `template` and append their output to the final buffer.
+
+This step of conversion happens for each ___Subject___ read.
+
+_Default template philosophy:_ Each ___Subject___ is thought as a `chapter` of a book in the _LaTeX_ terminology.
+
+### ___Project___ conversion
+
+Each ___Project___ will have a copy of the default ___Project___ `YAML` named `.proj.yaml` inside it. The same process of ___Subject___ will be done. However, each ___Project___ output will come before all of its ___Subjects___.
+
+If you want to use other than the default `template`, you must save your own `template` at the ___Projects___ folder and name it `.proj.template.tex`.
+
+This step may not have a `body` entry in your `YAML` or `template` files, as there is no content for them editable by Logbuch (~~yet~~).
+
+This step of conversion happens at the beginning of each new ___Project___ read.
+
+_Default template philosophy:_ Each ___Project___ is thought as a `part` of a book in the _LaTeX_ terminology. So they will be the higher sectioning in your Lab-Book.
+
+### Whole document conversion
+
+After filling the buffer with all the previous conversions content, Logbuch will call `pandoc` with a completely structured `template` at this step.
+
+At this point, there will be no more unconverted ___Subject___ in the `pandoc_from_format` format. So, this is roughly just a 'amalgamation' and restructuring step.
+
+Logbuch will get all `metadata` written at `.meta.yaml` in your ___Projects___ root folder and append all the buffer content to it. This content will be, thus, the `body` variable inside the final `template`.
+
+Then, Logbuch will call `pandoc` passing that `metadata+body` to the final `template` and generate the output in, e.g., `.tex` format.
+
+The default `template` is a slightly modified version of an user contributed `template` [Eisvogel](https://github.com/Wandmalfarbe/pandoc-latex-template). It's a good idea to read its entire documentation and original `template` if you want to edit the default `metadata` file or even create your own `template`. It's not that hard, but you may invest some of your time learning how it works.
+
+If you want to use other than the default `template`, you must save your own `template` at the ___Projects___ folder and name it `.proj.template.tex`.
+
+I'm glad to receive any design tips, as I'm not that good and I know the default `template` should have improvements.
 
 ## Issues and desired features
 
