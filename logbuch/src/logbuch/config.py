@@ -66,7 +66,7 @@ class Config(object):
         )
 
     def _get_cmd_args(self,make,list,remove,conf,proj,git,subject):
-        self._buch = not (make^list^remove^proj^git)
+        self._buch = not (make^list^remove^conf^proj^git)
         self._list = list
         self._remv = remove
         self._make = make
