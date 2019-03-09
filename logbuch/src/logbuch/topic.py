@@ -143,6 +143,9 @@ class Topic(object):
 
     def delete(self):
         os.remove(self._path)
+        if self._conf.isAutoCommit():
+            print('\nGit autocommiting...\n\n')
+            Git.autoCommit(self._conf,self._subject+self._ext,0,0,delete=True)
         self._header_h.delete()
 
 # header helper class
@@ -309,3 +312,6 @@ class TopicHeader(object):
 
     def delete(self):
         os.remove(self._path)
+        if self._conf.isAutoCommit():
+            print('\nGit autocommiting...\n\n')
+            Git.autoCommit(self._conf,'.'+self._subject+self._ext,0,0,delete=True)

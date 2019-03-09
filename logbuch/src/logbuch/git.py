@@ -4,7 +4,7 @@ import subprocess
 import datetime
 
 class Git:
-    def autoCommit(conf, subj,changedC,changedL):
+    def autoCommit(conf, subj,changedC,changedL,delete=False):
         cwd = conf.projsDir()
         act = conf.actProj()
         now = datetime.datetime.now().strftime('%H:%M %d.%m.%Y')
@@ -18,7 +18,10 @@ class Git:
         subprocess.run(['git','add',act+'/'+subj],cwd=cwd)
 
         # commiting addition
-        msg = '%+d lines, %+d chars to "%s" at %s'%(changedL,changedC,act+'/'+subj,now)
+        if not delete:
+            msg = '%+d lines, %+d chars to "%s" at %s'%(changedL,changedC,act+'/'+subj,now)
+        else:
+            msg = 'deleted "%s" at %s'%(act+'/'+subj,now)
         subprocess.run(['git','commit','-m',msg],cwd=cwd)
 
     def wrapper(conf,args):
