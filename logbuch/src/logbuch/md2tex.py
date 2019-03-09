@@ -49,6 +49,14 @@ class Md2Tex(object):
         self._get_contents(dic,config)
         self._writeContents()
 
+    # TODO: Use pyyaml https://pyyaml.org/wiki/PyYAMLDocumentation
+    # ..... to create a big YAML block appended to .meta.yaml that
+    # ..... will be passed to pandoc as metadata input.
+    # ..... Also allowing to use a single template once for compiling.
+    # ..... Using YAML arrays and dict-like syntax and using pandoc's
+    # ..... $if()$, $for()$ and $var.subvar.subsubvar$ syntax to
+    # ..... allow the user to customise in one single file everything.
+    # ..... But .subj.yaml and .proj.yaml may stay as is.
     def _get_contents(self,dic,config):
         frm, to = config.getFromToFormats()
         logb_tplt = self._tplates.logb_template()
@@ -77,8 +85,11 @@ class Md2Tex(object):
                     self._convert_md(subj_tplt,top_yaml,text=True,frm=frm,to=to,args=self._pandoc_args)
                 ])
 
-        final_yaml = self._append_body_yaml(meta_yaml,self._tex_text)
-        self._pandoc_output = ext = self._convert_md(logb_tplt,final_yaml,text=True,frm=frm,to=to)
+        # final_yaml = self._append_body_yaml(meta_yaml,self._tex_text)
+        final_yaml = self._append_body_yaml(meta_yaml,'Thisisalogbuchdummyvariabletoconvertbody')
+        self._pandoc_output = self._convert_md(logb_tplt,final_yaml,text=True,frm=frm,to=to)
+        self._pandoc_output = self._pandoc_output.\
+            replace('Thisisalogbuchdummyvariabletoconvertbody',self._tex_text)
 
     def _convert_md(self,template,yaml,outfile=None,text=False,frm='md',to='latex',args=[]):
         if text:
