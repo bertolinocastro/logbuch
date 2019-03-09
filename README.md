@@ -10,6 +10,23 @@ A less-do-more program to take your notes quickly before you forget them.
 
 It also compiles in LaTeX for your [Lab-Book](https://github.com/waltercostamb/Lab-Book)/research history. :-)
 
+## Basic usage
+<img src="https://bertolinocastro.github.io/logbuch/basic-usage.gif" title="Basic usage">  
+
+## Git integration
+<img src="https://bertolinocastro.github.io/logbuch/git-usage.gif" title="Git integration">  
+
+## _LaTeX_ compilation
+<img src="https://bertolinocastro.github.io/logbuch/make-usage.gif" title="LaTeX compilation">  
+
+## Configuring at first use
+<img src="https://bertolinocastro.github.io/logbuch/first-usage.gif" title="Configuring at first use">  
+
+## Example output
+<img src="https://bertolinocastro.github.io/logbuch/output.tex.gif" align="center" title="Example output">  
+
+_You can see this example and others with Logbuch generated data in this [repository](https://github.com/bertolinocastro/logbuch-example-output)._
+
 ## Description
 
 Logbuch is a command line tool aimed to quickly take notes while you're closer to a terminal.
