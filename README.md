@@ -35,7 +35,7 @@ Logbuch works handling any markup input format files (such as _Markdown_, _HTML_
 
 Each ___Subject___ content is converted from its input format to the output format defined by the user and then becomes a content as defined by the user inside its ___Project___.
 
-_<sup>def</sup>_: By default, Logbuch will convert from [`pandoc`'s _Markdown_](https://pandoc.org/MANUAL.html#pandocs-markdown) to _LaTeX_. However, it's possible to set `input` and `output` formats for `pandoc` convertion.
+_<sup>def</sup>_: By default, Logbuch will convert from [`pandoc`'s _Markdown_](https://pandoc.org/MANUAL.html#pandocs-markdown) to _LaTeX_. However, it's possible to set `input` and `output` formats for `pandoc` conversion.
 
 ## Table of Contents
 
