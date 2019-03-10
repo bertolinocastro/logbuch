@@ -5,8 +5,6 @@ import sys
 import subprocess
 
 # auto setting bash completion var in user's .bashrc if it's not already set
-
-
 class PostInstall(install):
     def run(self):
         cont = ''
