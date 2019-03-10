@@ -131,7 +131,7 @@ class Config(object):
                     raise Exception('Your system does not have "%s" installed.'%tool)
             return tmp
         except Exception as e:
-            print(repr(e))
+            print(e)
             if self._make: sys.exit()
             return ['']
 
@@ -170,6 +170,8 @@ class Config(object):
 
     def _confSave(self):
         try:
+            if not os.path.exists(self._base):
+                os.mkdir(self._base)
             with open(self._path,'w') as f:
                 self._cfg_parser.write(f)
         except:
