@@ -19,7 +19,7 @@ It also compiles in LaTeX for your [Lab-Book](https://github.com/waltercostamb/L
 ## _LaTeX_ compilation
 <img src="https://bertolinocastro.github.io/logbuch/make-usage.gif" title="LaTeX compilation">  
 
-## Configuring at first use
+## Configuring on first use
 <img src="https://bertolinocastro.github.io/logbuch/first-usage.gif" title="Configuring at first use">  
 
 ## Example output
