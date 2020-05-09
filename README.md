@@ -1,4 +1,4 @@
-<img src="https://bertolinocastro.github.io/logbuch/logo.png" align="right" title="Logbuch logo">
+<img src="https://bertolinocastro.github.io/other_repo_webcontent/logbuch/logo.png" align="right" title="Logbuch logo">
 
 ![version](https://img.shields.io/badge/version-v1.0-orange.svg)
 ![platform](http://img.shields.io/badge/platform-linux-brightgreen.svg)
@@ -11,19 +11,19 @@ A less-do-more program to take your notes quickly before you forget them.
 It also compiles in LaTeX for your [Lab-Book](https://github.com/waltercostamb/Lab-Book)/research history. :-)
 
 ## Basic usage
-<img src="https://bertolinocastro.github.io/logbuch/basic-usage.gif" title="Basic usage">  
+<img src="https://bertolinocastro.github.io/other_repo_webcontent/logbuch/basic-usage.gif" title="Basic usage">  
 
 ## Git integration
-<img src="https://bertolinocastro.github.io/logbuch/git-usage.gif" title="Git integration">  
+<img src="https://bertolinocastro.github.io/other_repo_webcontent/logbuch/git-usage.gif" title="Git integration">  
 
 ## _LaTeX_ compilation
-<img src="https://bertolinocastro.github.io/logbuch/make-usage.gif" title="LaTeX compilation">  
+<img src="https://bertolinocastro.github.io/other_repo_webcontent/logbuch/make-usage.gif" title="LaTeX compilation">  
 
 ## Configuring on first use
-<img src="https://bertolinocastro.github.io/logbuch/first-usage.gif" title="Configuring at first use">  
+<img src="https://bertolinocastro.github.io/other_repo_webcontent/logbuch/first-usage.gif" title="Configuring at first use">  
 
 ## Example output
-<img src="https://bertolinocastro.github.io/logbuch/output.tex.gif" align="center" title="Example output">  
+<img src="https://bertolinocastro.github.io/other_repo_webcontent/logbuch/output.tex.gif" align="center" title="Example output">  
 
 _You can see this example and others with Logbuch generated data in this [repository](https://github.com/bertolinocastro/logbuch-example-output)._
 
